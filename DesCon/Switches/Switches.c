@@ -74,7 +74,6 @@ int main (void) {
 
  uint32_t btns = 0;
 
-
   SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
     while (1);                                  /* Capture error              */
@@ -86,28 +85,15 @@ int main (void) {
   
 
 	GPIOD->ODR = 0;																/* turn LEDs off */
-	int btn = 0;
-  while(1) {                                    /* Loop forever               */
-    btns = SWT_Get();                           /* Read switch states         */
-		if(btns & 0x1) {
-			if(btn == 0){
-				btn = 1;
-			}
-			else if(btn == 1) {
-				btn = 0;
-			}
-		}
-		if(btn == 1) {
-			GPIOD->ODR = btns;
-			Delay(50);
-		}
-		else if(btn == 0) {
-			GPIOD->ODR = 0;
-			Delay(50);
-		}
-	}
-
 	
-				
+	uint32_t default_btns = SWT_Get(); 
+  while(1) {                                    /* Loop forever               */
+		btns = SWT_Get();                           /* Read switch states */  
+		if(btns != default_btns){
+			btns = GPIOD-> ODR ^ btns;  
+			GPIOD->ODR = btns;
+			while(SWT_Get() != default_btns);
+		}
+	}				
 }
 
