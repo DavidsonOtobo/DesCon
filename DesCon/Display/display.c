@@ -107,6 +107,8 @@ int main (void) {
 	GPIOD->ODR = 0;	
 	
 	uint32_t default_btns = SWT_Get(); 
+//	uint32_t default_LED = LED_Get();
+	
   while(1) {                                    /* Loop forever               */
 		btns = SWT_Get();                           /* Read switch states */  
 		if(btns != default_btns){
@@ -114,10 +116,15 @@ int main (void) {
 			GPIOD->ODR = btns;
 			LCD_Clear();
 			
-			sprintf(keyPressed,"Key %d Pressed!", (((int)log2(btns >> 8))));
+			if ((((int)log2(btns >> 8))) > -1) {
+				sprintf(keyPressed,"Key %d Pressed!", (((int)log2(btns >> 8))));
+			}
+			else {
+				sprintf(keyPressed,"No key pressed!");
+			}
 
 			LCD_PutS(keyPressed);
-			
+		
 			while(SWT_Get() != default_btns);
 		}
 	}	
