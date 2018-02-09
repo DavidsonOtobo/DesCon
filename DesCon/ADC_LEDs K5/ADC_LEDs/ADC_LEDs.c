@@ -97,7 +97,7 @@ unsigned int read_ADC1 (void) {
 // Outputs value of voltage
 float voltage (float reading)
 {
-	reading = ((float)reading/4096.0)*2.9; // Gets value of voltage
+	reading = ((((float)reading/4096.0)*3.0)/0.15)-10; // Gets value of voltage
 	return (reading);
 }
 
@@ -117,10 +117,10 @@ float resistance (float reading)
  *----------------------------------------------------------------------------*/
 int main (void) {
  
- uint32_t value = 0;
- float voltVal = 0.0;
-uint32_t btns = 0;
-int32_t menu = 0;
+	uint32_t value = 0;
+	float calcVal = 0.0;
+	uint32_t btns = 0;
+	int32_t menu = 0;
 
   SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
@@ -146,14 +146,14 @@ int32_t menu = 0;
 	LCD_Clear();
 
 	
-	//Moves Location of LCD output
-	LCD_GotoXY(4,1);
 	
 	GPIOD->ODR = 0;	
 	
 	
 	// Stores key press
 	char keyPressed[2];
+	// Represents unit of measurement
+	char unit[2] = "  ";
 	
 	uint32_t default_btns = SWT_Get(); 
  
@@ -166,19 +166,24 @@ int32_t menu = 0;
 		if(btns != default_btns){
 			GPIOD->ODR = btns; //Outputs button press to LEDs
 			menu = (((int)log2(btns >> 8))) + 1;
-		}
-				
+		}			
 		
 		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
-		//value = (value << 4) & 0xFF00; 							/* Shift and AND to isolate bits 15-8 */
+		//value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
 		
 		if(menu == 1) {
-			voltVal = voltage(value);
+			calcVal = voltage(value);
+			if(menu == 4) {
+				sprintf(unit,"mV");
+			}
+			else {
+				sprintf(unit,"V");
+			}
 		}
 		
-		sprintf(keyPressed,"%.4f", voltVal); //Outputs dp
+		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
 		LCD_PutS(keyPressed); //Outputs to LCD
-		Delay(100);
+		Delay(500);
 		LCD_Clear();
 		
 
