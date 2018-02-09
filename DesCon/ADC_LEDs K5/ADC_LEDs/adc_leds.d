@@ -9,3 +9,5 @@
 .\adc_leds.o: C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h
 .\adc_leds.o: LED.h
 .\adc_leds.o: LCD.h
+.\adc_leds.o: SWT.h
+.\adc_leds.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h

@@ -8,6 +8,8 @@ reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 #include "STM32F4xx.h"
 #include "LED.h"
 #include "LCD.h"
+#include "SWT.h"
+#include "math.h"
 
 
 
@@ -91,6 +93,25 @@ unsigned int read_ADC1 (void) {
 	/* Return data value */
 	return (ADC1->DR);
 }
+
+// Outputs value of voltage
+float voltage (float reading)
+{
+	reading = ((float)reading/4096.0)*2.9; // Gets value of voltage
+	return (reading);
+}
+
+float current (float reading)
+{
+	return(reading);
+}
+
+float resistance (float reading)
+{
+	return (reading);
+}
+
+
 /*----------------------------------------------------------------------------
   MAIN function
  *----------------------------------------------------------------------------*/
@@ -98,16 +119,21 @@ int main (void) {
  
  uint32_t value = 0;
  float voltVal = 0.0;
+uint32_t btns = 0;
+int32_t menu = 0;
 
   SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
     while (1);                                  /* Capture error              */
   }
 
+	// Initializes LEDs, Buttons and ADC
   LED_Init();
   BTN_Init();  
 	ADC1_init();
+	SWT_Init();
 	
+	//Initializes LCD
 	LCD_Initpins();	
 	LCD_DriverOn();
 	
@@ -118,26 +144,46 @@ int main (void) {
 	LCD_On(1);
 	Delay(20);
 	LCD_Clear();
-	LCD_PutS("DesCon");
+
 	
+	//Moves Location of LCD output
 	LCD_GotoXY(4,1);
 	
 	GPIOD->ODR = 0;	
 	
+	
+	// Stores key press
 	char keyPressed[2];
+	
+	uint32_t default_btns = SWT_Get(); 
  
-  while(1) {                                    /* Loop forever               */
- 
+  while(1) {      
+
+		/* Loop forever               */
+
+		btns = SWT_Get(); //Gets value of button pressed
+		
+		if(btns != default_btns){
+			GPIOD->ODR = btns; //Outputs button press to LEDs
+			menu = (((int)log2(btns >> 8))) + 1;
+		}
+				
+		
 		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
 		//value = (value << 4) & 0xFF00; 							/* Shift and AND to isolate bits 15-8 */
-		GPIOD->ODR = value | (GPIOD->ODR & 0x00FF);
-		voltVal = ((float)value/4096.0)*2.9;
-		sprintf(keyPressed,"%.1f", voltVal);
-		LCD_PutS(keyPressed);
+		
+		if(menu == 1) {
+			voltVal = voltage(value);
+		}
+		
+		sprintf(keyPressed,"%.4f", voltVal); //Outputs dp
+		LCD_PutS(keyPressed); //Outputs to LCD
 		Delay(100);
 		LCD_Clear();
+		
 
-  }
+		
+		}
   
 }
 

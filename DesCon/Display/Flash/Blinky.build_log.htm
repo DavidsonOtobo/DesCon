@@ -9,47 +9,123 @@ License Information: Support The Flex license: MDK-ARM Professional: 100 user(s)
  
 Tool Versions:
 Toolchain:       MDK-ARM Professional: 100 user(s)  Version: 5.23
-Toolchain Path:  C:\KEIL_V5\ARM\ARMCC\Bin
-C Compiler:      Armcc.exe V5.06 update 4 (build 422)
-Assembler:       Armasm.exe V5.06 update 4 (build 422)
-Linker/Locator:  ArmLink.exe V5.06 update 4 (build 422)
-Library Manager: ArmAr.exe V5.06 update 4 (build 422)
-Hex Converter:   FromElf.exe V5.06 update 4 (build 422)
+Toolchain Path:  C:\KEIL_V5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.6
+Assembler:       Armasm.exe V6.6
+Linker/Locator:  ArmLink.exe V6.6
+Library Manager: ArmAr.exe V6.6
+Hex Converter:   FromElf.exe V6.6
 CPU DLL:         SARMCM3.DLL V5.23
 Dialog DLL:      DCM.DLL V1.15.0.0
 Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-M:\w2k\DesCon\DesCon\Display\display.uvprojx
+H:\DesCon\DesCon\Display\display.uvprojx
 Project File Date:  02/02/2018
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\KEIL_V5\ARM\ARMCC\Bin'
+*** Using Compiler 'V6.6', folder: 'C:\KEIL_V5\ARM\ARMCLANG\Bin'
 Rebuild target 'STM32F407 Flash'
+SWT.c(16): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "STM32F4xx.h"
+         ^~~~~~~~~~~~~
+         "stm32f4xx.h"
+SWT.c(19): warning: no previous extern declaration for non-static variable 'SWT_mask' [-Wmissing-variable-declarations]
+const unsigned long SWT_mask[] = {1UL << 8, 1UL << 9, 1UL << 10, 1UL << 11, 1UL << 12, 1UL << 13, 1UL << 14, 1UL << 15};
+                    ^
+SWT.c(78): warning: implicit conversion changes signedness: 'unsigned long' to 'int' [-Wsign-conversion]
+                return ( GPIOE->IDR & SWT_mask[num] );
+                ~~~~~~   ~~~~~~~~~~~^~~~~~~~~~~~~~~
+3 warnings generated.
 compiling SWT.c...
+LED.c(16): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "STM32F4xx.h"
+         ^~~~~~~~~~~~~
+         "stm32f4xx.h"
+LED.c(19): warning: no previous extern declaration for non-static variable 'led_mask' [-Wmissing-variable-declarations]
+const unsigned long led_mask[] = {1UL << 8, 1UL << 9, 1UL << 10, 1UL << 11, 1UL << 12, 1UL << 13, 1UL << 14, 1UL << 15};
+                    ^
+LED.c(114): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+      LED_On (i);
+      ~~~~~~  ^
+LED.c(116): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+      LED_Off(i);
+      ~~~~~~~ ^
+LED.c(124): warning: no previous prototype for function 'LED_Get' [-Wmissing-prototypes]
+uint32_t LED_Get (void) {
+         ^
+5 warnings generated.
 compiling LED.c...
+LCD.c(16): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "STM32F4xx.h"
+         ^~~~~~~~~~~~~
+         "stm32f4xx.h"
+LCD.c(19): warning: no previous extern declaration for non-static variable 'lcd_mask' [-Wmissing-variable-declarations]
+const unsigned long lcd_mask[] = {1UL << 0, 1UL << 1, 1UL << 2, 1UL << 3, 1UL << 4, 1UL << 5, 1UL << 6, 1UL << 7};
+                    ^
+LCD.c(20): warning: no previous extern declaration for non-static variable 'lcd_RS' [-Wmissing-variable-declarations]
+const unsigned long lcd_RS    = 1UL << 0;
+                    ^
+LCD.c(21): warning: no previous extern declaration for non-static variable 'lcd_RdnWr' [-Wmissing-variable-declarations]
+const unsigned long lcd_RdnWr = 1UL << 1;
+                    ^
+LCD.c(22): warning: no previous extern declaration for non-static variable 'lcd_E' [-Wmissing-variable-declarations]
+const unsigned long lcd_E     = 1UL << 2;
+                    ^
+LCD.c(298): warning: no previous prototype for function 'LCD_cursor_on' [-Wmissing-prototypes]
+void LCD_cursor_on (void) {
+     ^
+6 warnings generated.
 compiling LCD.c...
 assembling startup_stm32f407xx.s...
-compiling system_stm32f4xx.c...
+display.c(19): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "STM32F4xx.h"
+         ^~~~~~~~~~~~~
+         "stm32f4xx.h"
+display.c(31): warning: no previous prototype for function 'SysTick_Handler' [-Wmissing-prototypes]
+void SysTick_Handler(void) {
+     ^
+display.c(49): warning: no previous prototype for function 'BTN_Init' [-Wmissing-prototypes]
+void BTN_Init(void) {
+     ^
+display.c(62): warning: no previous prototype for function 'BTN_Get' [-Wmissing-prototypes]
+ uint32_t BTN_Get(void) {
+          ^
+display.c(119): warning: cast from function call of type 'double' to non-matching type 'int' [-Wbad-function-cast]
+                        if ((((int)log2(btns >> 8))) > -1) {
+                                   ^~~~~~~~~~~~~~~
+display.c(120): warning: cast from function call of type 'double' to non-matching type 'int' [-Wbad-function-cast]
+                                sprintf(keyPressed,"Key %d Pressed!", (((int)log2(btns >> 8))));
+                                                                             ^~~~~~~~~~~~~~~
+display.c(27): warning: no previous extern declaration for non-static variable 'msTicks' [-Wmissing-variable-declarations]
+volatile uint32_t msTicks;                      /* counts 1ms timeTicks       */
+                  ^
+7 warnings generated.
 compiling display.c...
+RTE/Device/STM32F407VG/system_stm32f4xx.c(832): warning: while loop has empty body [-Wempty-body]
+    while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS ) != RCC_CFGR_SWS_PLL);
+                                                                     ^
+RTE/Device/STM32F407VG/system_stm32f4xx.c(832): note: put the semicolon on a separate line to silence this warning
+1 warning generated.
+compiling system_stm32f4xx.c...
 linking...
-Program Size: Code=7180 RO-data=612 RW-data=8 ZI-data=1632  
-".\Flash\Blinky.axf" - 0 Error(s), 0 Warning(s).
+Program Size: Code=6824 RO-data=536 RW-data=4 ZI-data=1644  
+".\Flash\Blinky.axf" - 0 Error(s), 22 Warning(s).
 
 <h2>Software Packages used:</h2>
-
-Package Vendor: Keil
-                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.11.0.pack
-                Keil::Device:Startup:2.6.0
-                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
-   * Component: Startup Version: 2.6.0
 
 Package Vendor: ARM
                 http://www.keil.com/pack/ARM.CMSIS.5.0.1.pack
                 ARM::CMSIS:CORE:5.0.1
                 CMSIS (Cortex Microcontroller Software Interface Standard)
    * Component: CORE Version: 5.0.1
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.11.0.pack
+                Keil::Device:Startup:2.6.0
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+   * Component: Startup Version: 2.6.0
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_STM32F407_Flash
@@ -58,15 +134,15 @@ Package Vendor: ARM
 
 <h2>Collection of Component Files used:</h2>
 
+   * Component: ARM::CMSIS:CORE:5.0.1
+
    * Component: Keil::Device:Startup:2.6.0
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
       Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
-
-   * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:05
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
