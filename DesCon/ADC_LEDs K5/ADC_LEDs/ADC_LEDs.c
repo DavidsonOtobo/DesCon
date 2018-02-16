@@ -10,6 +10,9 @@ reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 #include "LCD.h"
 #include "SWT.h"
 #include "math.h"
+#include "string.h"
+
+#define OMEGA "\u2126"
 
 
 
@@ -97,18 +100,41 @@ unsigned int read_ADC1 (void) {
 // Outputs value of voltage
 float voltage (float reading)
 {
-	reading = ((((float)reading/4096.0)*3.0)/0.15)-10; // Gets value of voltage
-	return (reading);
+	float R1,R2,R3,Rgain,V1,V2,Vout;
+	R1 = 10000.0;
+	R2 = 133333.33;
+	R3 = 10000.0;
+	Rgain = 20000.0;
+	V1 = -10.0;
+	
+	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+	V2 = ((Vout*(R2/R3))/(1+((2*R1)/Rgain)))+V1;
+	
+	return (V2);
 }
 
 float current (float reading)
 {
-	return(reading);
+	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+	R1 = 133333.33;
+	R2 = 100000.0;
+	Rf = 10000.0;
+	Rgain = 20000.0;
+	Vref = 1.5;
+	V2 = 0.0;
+	
+	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+	V1 = (Vout-Vref)/((1+(2*Rf)/Rgain)*(R2/R1))+V2; 
+	
+	return (V1);
 }
 
 float resistance (float reading)
 {
-	return (reading);
+
+	float R = current(reading)/0.000001;  
+	
+	return (R);
 }
 
 
@@ -178,6 +204,24 @@ int main (void) {
 			}
 			else {
 				sprintf(unit,"V");
+			}
+		}
+		else if(menu == 2) {
+			calcVal = current(value);
+			if(menu == 4) {
+				sprintf(unit,"mA");
+			}
+			else {
+				sprintf(unit,"A");
+			}
+		}
+		else if(menu == 3) {
+			calcVal = resistance(value);
+			if(menu == 4) {
+				sprintf(unit,"m%s", OMEGA);
+			}
+			else {
+				sprintf(unit,"%c", 242);
 			}
 		}
 		

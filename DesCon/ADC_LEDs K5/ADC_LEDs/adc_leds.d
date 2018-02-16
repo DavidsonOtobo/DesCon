@@ -11,3 +11,4 @@
 .\adc_leds.o: LCD.h
 .\adc_leds.o: SWT.h
 .\adc_leds.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
+.\adc_leds.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
