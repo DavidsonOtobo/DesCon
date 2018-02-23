@@ -21,12 +21,24 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-H:\DesCon\DesCon\Switches\Switches.uvprojx
+M:\w2k\DesCon\DesCon\Switches\Switches.uvprojx
 Project File Date:  02/09/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.6', folder: 'C:\KEIL_V5\ARM\ARMCLANG\Bin'
 Rebuild target 'STM32F407 Flash'
+SWT.c(16): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "STM32F4xx.h"
+         ^~~~~~~~~~~~~
+         "stm32f4xx.h"
+SWT.c(19): warning: no previous extern declaration for non-static variable 'SWT_mask' [-Wmissing-variable-declarations]
+const unsigned long SWT_mask[] = {1UL << 8, 1UL << 9, 1UL << 10, 1UL << 11, 1UL << 12, 1UL << 13, 1UL << 14, 1UL << 15};
+                    ^
+SWT.c(79): warning: implicit conversion changes signedness: 'unsigned long' to 'int' [-Wsign-conversion]
+                return ( GPIOE->IDR & SWT_mask[num] );
+                ~~~~~~   ~~~~~~~~~~~^~~~~~~~~~~~~~~
+3 warnings generated.
+compiling SWT.c...
 LED.c(16): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
 #include "STM32F4xx.h"
          ^~~~~~~~~~~~~
@@ -42,18 +54,6 @@ LED.c(116): warning: implicit conversion changes signedness: 'int' to 'unsigned 
       ~~~~~~~ ^
 4 warnings generated.
 compiling LED.c...
-SWT.c(16): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
-#include "STM32F4xx.h"
-         ^~~~~~~~~~~~~
-         "stm32f4xx.h"
-SWT.c(19): warning: no previous extern declaration for non-static variable 'SWT_mask' [-Wmissing-variable-declarations]
-const unsigned long SWT_mask[] = {1UL << 8, 1UL << 9, 1UL << 10, 1UL << 11, 1UL << 12, 1UL << 13, 1UL << 14, 1UL << 15};
-                    ^
-SWT.c(79): warning: implicit conversion changes signedness: 'unsigned long' to 'int' [-Wsign-conversion]
-                return ( GPIOE->IDR & SWT_mask[num] );
-                ~~~~~~   ~~~~~~~~~~~^~~~~~~~~~~~~~~
-3 warnings generated.
-compiling SWT.c...
 Switches.c(19): warning: non-portable path to file '"stm32f4xx.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
 #include "STM32F4xx.h"
          ^~~~~~~~~~~~~
@@ -111,11 +111,11 @@ Package Vendor: Keil
 
    * Component: Keil::Device:Startup:2.6.0
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

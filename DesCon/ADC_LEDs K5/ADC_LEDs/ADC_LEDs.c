@@ -12,9 +12,6 @@ reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 #include "math.h"
 #include "string.h"
 
-#define OMEGA "\u2126"
-
-
 
 volatile uint32_t msTicks;                      /* counts 1ms timeTicks       */
 /*----------------------------------------------------------------------------
@@ -147,6 +144,8 @@ int main (void) {
 	float calcVal = 0.0;
 	uint32_t btns = 0;
 	int32_t menu = 0;
+	int32_t menu1 = 0;
+	int32_t menu2 = 0;
 
   SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
@@ -180,6 +179,7 @@ int main (void) {
 	char keyPressed[2];
 	// Represents unit of measurement
 	char unit[2] = "  ";
+	char suffix[1] = " ";
 	
 	uint32_t default_btns = SWT_Get(); 
  
@@ -190,48 +190,42 @@ int main (void) {
 		btns = SWT_Get(); //Gets value of button pressed
 		
 		if(btns != default_btns){
+			btns = GPIOD-> ODR ^ btns;  
 			GPIOD->ODR = btns; //Outputs button press to LEDs
-			menu = (((int)log2(btns >> 8))) + 1;
+			menu = ((int)(btns >> 8));
+			menu1 = menu & 0x0F;
+			menu2 = menu & 0xF0;
 		}			
 		
 		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
 		//value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
 		
-		if(menu == 1) {
+		if (menu1 == 1) {
 			calcVal = voltage(value);
-			if(menu == 4) {
-				sprintf(unit,"mV");
-			}
-			else {
-				sprintf(unit,"V");
-			}
+			sprintf(suffix,"V");
 		}
-		else if(menu == 2) {
+		if(menu1 == 2) {
 			calcVal = current(value);
-			if(menu == 4) {
-				sprintf(unit,"mA");
-			}
-			else {
-				sprintf(unit,"A");
-			}
+			sprintf(suffix,"A");
 		}
-		else if(menu == 3) {
+		if(menu1 == 4) {
 			calcVal = resistance(value);
-			if(menu == 4) {
-				sprintf(unit,"m%s", OMEGA);
-			}
-			else {
-				sprintf(unit,"%c", 242);
-			}
+			sprintf(suffix,"%c", 222);
+		}
+		if (menu2 == 0x10) {
+			calcVal = calcVal/1000.0;
+			sprintf(unit,"m%s",suffix);
+		}
+		else {
+			sprintf(unit,"%s",suffix);
 		}
 		
 		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
 		LCD_PutS(keyPressed); //Outputs to LCD
 		Delay(500);
 		LCD_Clear();
-		
+		sprintf(unit,"");
 
-		
 		}
   
 }

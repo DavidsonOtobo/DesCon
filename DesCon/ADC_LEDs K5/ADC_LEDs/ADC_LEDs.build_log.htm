@@ -30,23 +30,22 @@ Rebuild target 'STM32F407 FLASH'
 compiling LED.c...
 compiling LCD.c...
 compiling ADC_LEDs.c...
-ADC_LEDs.c(110): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(107): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(126): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(123): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(118): warning:  #177-D: variable "R3"  was declared but never referenced
+ADC_LEDs.c(115): warning:  #177-D: variable "R3"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(135): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(132): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	float R = current(reading)/0.000001;  
-ADC_LEDs.c(221): warning:  #3488-D: Unicode character with hex value 2126 not representable in the system default code page
-  				sprintf(unit,"m%s", 
-MEGA);
+ADC_LEDs.c(216): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			calcVal = calcVal/1000.0;
 ADC_LEDs.c: 5 warnings, 0 errors
 assembling startup_stm32f407xx.s...
 compiling SWT.c...
 compiling system_stm32f4xx.c...
 linking...
-Program Size: Code=11892 RO-data=776 RW-data=8 ZI-data=1632  
+Program Size: Code=8848 RO-data=708 RW-data=8 ZI-data=1632  
 ".\ADC_LEDs.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
@@ -74,9 +73,9 @@ Package Vendor: Keil
 
    * Component: Keil::Device:Startup:2.6.0
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
-      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 Build Time Elapsed:  00:00:05
 </pre>
