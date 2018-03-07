@@ -129,7 +129,10 @@ float current (float reading)
 float resistance (float reading)
 {
 
-	float R = current(reading)/0.000001;  
+	
+	float Vout = ((float)reading/4096.0)*3.0;
+	float R = Vout/0.000532;
+	R = R/1.5;										//scaling factor  
 	
 	return (R);
 }
