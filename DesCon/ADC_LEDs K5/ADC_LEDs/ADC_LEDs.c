@@ -97,15 +97,11 @@ unsigned int read_ADC1 (void) {
 // Outputs value of voltage
 float voltage (float reading)
 {
-	float R1,R2,R3,Rgain,V1,V2,Vout;
-	R1 = 10000.0;
-	R2 = 133333.33;
-	R3 = 10000.0;
-	Rgain = 20000.0;
-	V1 = -10.0;
+	float V2,Vout;
+
 	
 	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-	V2 = ((Vout*(R2/R3))/(1+((2*R1)/Rgain)))+V1;
+	V2 = (Vout - 1.5)/0.15;
 	
 	return (V2);
 }
