@@ -97,15 +97,11 @@ unsigned int read_ADC1 (void) {
 // Outputs value of voltage
 float voltage (float reading)
 {
-	float R1,R2,R3,Rgain,V1,V2,Vout;
-	R1 = 10000.0;
-	R2 = 133333.33;
-	R3 = 10000.0;
-	Rgain = 20000.0;
-	V1 = -10.0;
+	float V2,Vout;
+
 	
-	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-	V2 = ((Vout*(R2/R3))/(1+((2*R1)/Rgain)))+V1;
+	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
+	V2 = (Vout - 1.5)/0.15;
 	
 	return (V2);
 }
@@ -120,7 +116,7 @@ float current (float reading)
 	Vref = 1.5;
 	V2 = 0.0;
 	
-	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
 	V1 = (Vout-Vref)/((1+(2*Rf)/Rgain)*(R2/R1))+V2; 
 	
 	return (V1);
@@ -129,7 +125,9 @@ float current (float reading)
 float resistance (float reading)
 {
 
-	float R = current(reading)/0.000001;  
+	float Vout = ((float)reading/4096.0)*3.0;
+	float R = Vout/0.000532;
+	R = R/1.5;										//scaling factor  
 	
 	return (R);
 }
@@ -236,7 +234,7 @@ int main (void) {
 		LCD_Clear();
 		sprintf(unit,"");
 		GPIOB->BSRR|=(1UL << 4)<<16;
-		}
-  
-}
 
+  
+	}
+}

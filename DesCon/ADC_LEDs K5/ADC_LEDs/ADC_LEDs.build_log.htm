@@ -21,20 +21,28 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
+<<<<<<< HEAD
 \\userfs\do575\w2k\DesCon\DesCon\ADC_LEDs K5\ADC_LEDs\ADC_LEDs.uvprojx
 Project File Date:  02/09/2018
+=======
+H:\descon\DesCon\ADC_LEDs K5\ADC_LEDs\ADC_LEDs.uvprojx
+Project File Date:  03/07/2018
+>>>>>>> be893fe014ff9f0c109ba02632cc027cb9013bfd
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\KEIL_V5\ARM\ARMCC\Bin'
 Rebuild target 'STM32F407 FLASH'
 compiling LED.c...
 compiling ADC_LEDs.c...
-ADC_LEDs.c(107): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(123): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(115): warning:  #177-D: variable "R3"  was declared but never referenced
+ADC_LEDs.c(103): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
+ADC_LEDs.c(104): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	V2 = (Vout - 1.5)/0.15;
+ADC_LEDs.c(119): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
+ADC_LEDs.c(111): warning:  #177-D: variable "R3"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+<<<<<<< HEAD
 ADC_LEDs.c(132): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	float R = current(reading)/0.000001;  
 ADC_LEDs.c(216): warning:  #1035-D: single-precision operand implicitly converted to double-precision
@@ -45,12 +53,28 @@ ADC_LEDs.c(224): warning:  #1035-D: single-precision operand implicitly converte
   			calcVal = calcVal*10.0;
 ADC_LEDs.c: 7 warnings, 0 errors
 compiling LCD.c...
+=======
+ADC_LEDs.c(128): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	float Vout = ((float)reading/4096.0)*3.0;
+ADC_LEDs.c(129): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	float R = Vout/0.000532;
+ADC_LEDs.c(130): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	R = R/1.5;										//scaling factor  
+ADC_LEDs.c(214): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			calcVal = calcVal/1000.0;
+ADC_LEDs.c: 8 warnings, 0 errors
+>>>>>>> be893fe014ff9f0c109ba02632cc027cb9013bfd
 assembling startup_stm32f407xx.s...
 compiling SWT.c...
 compiling system_stm32f4xx.c...
 linking...
+<<<<<<< HEAD
 Program Size: Code=8988 RO-data=708 RW-data=8 ZI-data=1632  
 ".\ADC_LEDs.axf" - 0 Error(s), 7 Warning(s).
+=======
+Program Size: Code=9740 RO-data=708 RW-data=8 ZI-data=1632  
+".\ADC_LEDs.axf" - 0 Error(s), 8 Warning(s).
+>>>>>>> be893fe014ff9f0c109ba02632cc027cb9013bfd
 
 <h2>Software Packages used:</h2>
 
@@ -77,9 +101,15 @@ Package Vendor: Keil
 
    * Component: Keil::Device:Startup:2.6.0
       Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
+<<<<<<< HEAD
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+=======
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+>>>>>>> be893fe014ff9f0c109ba02632cc027cb9013bfd
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 Build Time Elapsed:  00:00:05
 </pre>
