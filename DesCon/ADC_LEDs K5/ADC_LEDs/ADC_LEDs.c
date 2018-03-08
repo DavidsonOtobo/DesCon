@@ -185,7 +185,7 @@ int main (void) {
  
   while(1) {      
 
-		/* Loop forever               */
+		/* Loop forever */
 
 		btns = SWT_Get(); //Gets value of button pressed
 		
@@ -213,19 +213,29 @@ int main (void) {
 			sprintf(suffix,"%c", 222);
 		}
 		if (menu2 == 0x10) {
-			calcVal = calcVal/1000.0;
+			calcVal = calcVal*1000.0;
 			sprintf(unit,"m%s",suffix);
 		}
+		else	if (menu2 == 0x20) {
+			calcVal = calcVal*100.0;
+			sprintf(unit,"c%s",suffix);
+		}
+			else	if (menu2 == 0x40) {
+			calcVal = calcVal*10.0;
+			sprintf(unit,"d%s",suffix);
+		}
+
 		else {
 			sprintf(unit,"%s",suffix);
 		}
 		
 		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
 		LCD_PutS(keyPressed); //Outputs to LCD
+		GPIOB->BSRR|=(1UL << 4);
 		Delay(500);
 		LCD_Clear();
 		sprintf(unit,"");
-
+		GPIOB->BSRR|=(1UL << 4)<<16;
 		}
   
 }
