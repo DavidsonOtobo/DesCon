@@ -109,15 +109,10 @@ float voltage (float reading)
 float current (float reading)
 {
 	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-	R1 = 133333.33;
-	R2 = 100000.0;
-	Rf = 10000.0;
-	Rgain = 20000.0;
-	Vref = 1.5;
-	V2 = 0.0;
-	
+
 	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
-	V1 = (Vout-Vref)/((1+(2*Rf)/Rgain)*(R2/R1))+V2; 
+	V1 = ((Vout - 1.5)/0.15)/10;
+//	V1 = (Vout-Vref)/((1+(2*Rf)/Rgain)*(R2/R1))+V2; 
 	
 	return (V1);
 }
