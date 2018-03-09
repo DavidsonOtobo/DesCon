@@ -46,6 +46,36 @@ void BTN_Init(void) {
 }
 
 /*----------------------------------------------------------------------------
+  Function that initializes Buzzer
+ *----------------------------------------------------------------------------*/
+void BUZZ_Init(void) {
+
+  RCC->AHB1ENR  |= RCC_AHB1ENR_GPIOEEN;        /* Enable GPIOE clock         */
+
+  GPIOE->MODER    |= ((1UL << 2*3)   );        /* PE.3 is output             */
+	GPIOE->OTYPER   &= !((1UL <<   3)  );				 /* PE.3 is output Push-Pull   */     
+  GPIOE->OSPEEDR  |=  ((2UL << 2*3)  ); 			 /* PE.3 is 50MHz Fast Speed */       
+	GPIOE->PUPDR    |=  ((3UL << 2*3)  );				 /* PE.3 is no Pull up         */
+}
+
+/*----------------------------------------------------------------------------
+  Function that triggers Buzzer
+ *----------------------------------------------------------------------------*/
+void BUZZ_Trig(int type) {
+	if (type == 0) {
+		GPIOE->BSRR|=(1UL << 3)<<16;
+	}
+	else if (type == 1) {
+		GPIOE->BSRR|=(1UL << 3);
+		Delay(100);
+		GPIOE->BSRR|=(1UL << 3)<<16;
+	}
+	else if (type == 2) {
+		GPIOE->BSRR|=(1UL << 3);
+	}
+}
+
+/*----------------------------------------------------------------------------
   Function that read Button pins
  *----------------------------------------------------------------------------*/
 uint32_t BTN_Get(void) {
@@ -98,11 +128,19 @@ unsigned int read_ADC1 (void) {
 float voltage (float reading)
 {
 	float V2,Vout;
-
 	
-	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
+	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
 	V2 = (Vout - 1.5)/0.15;
 	
+	if (V2 > 9.99 || V2 == -10.0) {
+		BUZZ_Trig(2);
+	}
+	else if (V2 >= 9.5 || V2 <= -9.5) {
+		BUZZ_Trig(1);
+	}
+	else {
+		BUZZ_Trig(0);
+	}
 	return (V2);
 }
 
@@ -110,9 +148,18 @@ float current (float reading)
 {
 	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
 
-	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
+	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
 	V1 = ((Vout - 1.5)/0.15)/10;
-//	V1 = (Vout-Vref)/((1+(2*Rf)/Rgain)*(R2/R1))+V2; 
+	
+	if (V1 > 0.99 || V1 == -1.0) {
+		BUZZ_Trig(2);
+	}
+	else if (V1 >= 0.8 || V1 <= -0.8) {
+		BUZZ_Trig(1);
+	}
+	else {
+		BUZZ_Trig(0);
+	}
 	
 	return (V1);
 }
@@ -123,6 +170,13 @@ float resistance (float reading)
 	float Vout = ((float)reading/4096.0)*3.0;
 	float R = Vout/0.000532;
 	R = R/1.5;										//scaling factor  
+	
+	if (R == 0){
+		BUZZ_Trig(2);
+	}
+	else {
+		BUZZ_Trig(0);
+	}
 	
 	return (R);
 }
@@ -136,9 +190,9 @@ int main (void) {
 	uint32_t value = 0;
 	float calcVal = 0.0;
 	uint32_t btns = 0;
-	int32_t menu = 0;
-	int32_t menu1 = 0;
-	int32_t menu2 = 0;
+	int32_t menu = 0; // Menu of buttons
+	int32_t menu1 = 0; // first half of the buttons
+	int32_t menu2 = 0; // second half of the buttons
 
   SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
@@ -150,6 +204,7 @@ int main (void) {
   BTN_Init();  
 	ADC1_init();
 	SWT_Init();
+	BUZZ_Init();
 	
 	//Initializes LCD
 	LCD_Initpins();	
@@ -193,6 +248,9 @@ int main (void) {
 		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
 		//value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
 		
+		BUZZ_Trig(0);
+		
+		// Outputs voltage is first button is selected
 		if (menu1 == 1) {
 			calcVal = voltage(value);
 			sprintf(suffix,"V");
@@ -213,9 +271,9 @@ int main (void) {
 			calcVal = calcVal*100.0;
 			sprintf(unit,"c%s",suffix);
 		}
-			else	if (menu2 == 0x40) {
-			calcVal = calcVal*10.0;
-			sprintf(unit,"d%s",suffix);
+		else	if (menu2 == 0x40) {
+		calcVal = calcVal*10.0;
+		sprintf(unit,"d%s",suffix);
 		}
 
 		else {
@@ -224,12 +282,14 @@ int main (void) {
 		
 		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
 		LCD_PutS(keyPressed); //Outputs to LCD
-		GPIOB->BSRR|=(1UL << 4);
+		
+		
+		
 		Delay(500);
+		
 		LCD_Clear();
+		
 		sprintf(unit,"");
-		GPIOB->BSRR|=(1UL << 4)<<16;
-
   
 	}
 }
