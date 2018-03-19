@@ -14,6 +14,9 @@ reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 
 
 volatile uint32_t msTicks;                      /* counts 1ms timeTicks       */
+int muxState = 0;
+int A_Trig[3] = {0, 0, 0}; // used to monitor state of A 0 - 3 
+
 /*----------------------------------------------------------------------------
   SysTick_Handler
  *----------------------------------------------------------------------------*/
@@ -58,6 +61,25 @@ void BUZZ_Init(void) {
 	GPIOE->PUPDR    |=  ((3UL << 2*3)  );				 /* PE.3 is no Pull up         */
 }
 
+void A_Init(void) {
+
+  GPIOE->MODER    |= ((1UL << 2*4)   );        /* PE.4 is output             */
+	GPIOE->OTYPER   &= !((1UL <<   4)  );				 /* PE.4 is output Push-Pull   */     
+  GPIOE->OSPEEDR  |=  ((2UL << 2*4)  ); 			 /* PE.4 is 50MHz Fast Speed */       
+	GPIOE->PUPDR    |=  ((3UL << 2*4)  );				 /* PE.4 is no Pull up         */
+	
+	GPIOE->MODER    |= ((1UL << 2*5)   );        /* PE.5 is output             */
+	GPIOE->OTYPER   &= !((1UL <<   5)  );				 /* PE.5 is output Push-Pull   */     
+  GPIOE->OSPEEDR  |=  ((2UL << 2*5)  ); 			 /* PE.5 is 50MHz Fast Speed */       
+	GPIOE->PUPDR    |=  ((3UL << 2*5)  );				 /* PE.5 is no Pull up         */
+	
+	GPIOE->MODER    |= ((1UL << 2*6)   );        /* PE.6 is output             */
+	GPIOE->OTYPER   &= !((1UL <<   6)  );				 /* PE.6 is output Push-Pull   */     
+  GPIOE->OSPEEDR  |=  ((2UL << 2*6)  ); 			 /* PE.6 is 50MHz Fast Speed */       
+	GPIOE->PUPDR    |=  ((3UL << 2*6)  );				 /* PE.6 is no Pull up         */
+}
+
+
 /*----------------------------------------------------------------------------
   Function that triggers Buzzer
  *----------------------------------------------------------------------------*/
@@ -72,6 +94,48 @@ void BUZZ_Trig(int type) {
 	}
 	else if (type == 2) {
 		GPIOE->BSRR|=(1UL << 3);
+	}
+}
+
+/*----------------------------------------------------------------------------
+  Function that triggers A2
+ *----------------------------------------------------------------------------*/
+void A2_Trig(int type) {
+	if (type == 0) {
+		GPIOE->BSRR|=(1UL << 4)<<16;
+		A_Trig[2] = 0;
+	}
+	else if (type == 1) {
+		GPIOE->BSRR|=(1UL << 4);
+		A_Trig[2] = 1;
+	}
+}
+
+/*----------------------------------------------------------------------------
+  Function that triggers A1
+ *----------------------------------------------------------------------------*/
+void A1_Trig(int type) {
+	if (type == 0) {
+		GPIOE->BSRR|=(1UL << 5)<<16;
+		A_Trig[1] = 0;
+	}
+	else if (type == 1) {
+		GPIOE->BSRR|=(1UL << 5);
+		A_Trig[1] = 1;
+	}
+}
+
+/*----------------------------------------------------------------------------
+  Function that triggers A0
+ *----------------------------------------------------------------------------*/
+void A0_Trig(int type) {
+	if (type == 0) {
+		GPIOE->BSRR|=(1UL << 6)<<16;
+		A_Trig[0] = 0;
+	}
+	else if (type == 1) {
+		GPIOE->BSRR|=(1UL << 6);
+		A_Trig[0] = 1;
 	}
 }
 
@@ -124,6 +188,56 @@ unsigned int read_ADC1 (void) {
 	return (ADC1->DR);
 }
 
+float autoRange (float value, int measurement)
+{
+	// Detects the state of the wires and gets the actual value
+	if (A_Trig[2] == 0 && A_Trig[1] == 1 && A_Trig[0] == 1) {
+		value = value / 1000.0;
+	}
+	
+	if (A_Trig[2] == 0 && A_Trig[1] == 1 && A_Trig[0] == 0) {
+		value = value / 100.0;
+	}
+	
+	if (A_Trig[2] == 0 && A_Trig[1] == 0 && A_Trig[0] == 1) {
+		value = value / 10.0;
+	}
+		
+	if (value < 0.001 && value > - 0.001 && measurement == 1) {
+		//|| (value > 2.99 && measurement == 3) || muxState == 1) {
+		A2_Trig(0);
+		A1_Trig(1);
+		A0_Trig(1);
+		muxState = 1;
+		return value/1000.0;
+	}
+	else if (value < 0.1 && value > - 0.1 && measurement == 1) {
+		//|| (value > 2.99 && measurement == 3) || muxState == 2) {
+		A2_Trig(0);
+		A1_Trig(1);
+		A0_Trig(0);
+		muxState = 2;
+		return value/100.0;
+	}
+	else if (value < 1 && value > - 1 && measurement == 1) {
+		//|| (value > 2.99 && measurement == 3) || muxState == 3) {
+		A2_Trig(0);
+		A1_Trig(0);
+		A0_Trig(1);
+		muxState = 3;
+		return value/10.0;
+	}
+	else {
+		A2_Trig(0);
+		A1_Trig(0);
+		A0_Trig(0); 
+		muxState = 0;
+		return value;
+	}
+
+}
+
+
 // Outputs value of voltage
 float voltage (float reading)
 {
@@ -166,8 +280,8 @@ float current (float reading)
 
 float resistance (float reading)
 {
-
 	float Vout = ((float)reading/4096.0)*3.0;
+	Vout = autoRange(Vout,3);
 	float R = Vout/0.000532;
 	R = R/1.5;										//scaling factor  
 	
@@ -180,6 +294,7 @@ float resistance (float reading)
 	
 	return (R);
 }
+
 
 
 /*----------------------------------------------------------------------------
@@ -205,6 +320,7 @@ int main (void) {
 	ADC1_init();
 	SWT_Init();
 	BUZZ_Init();
+	A_Init();
 	
 	//Initializes LCD
 	LCD_Initpins();	
@@ -217,11 +333,9 @@ int main (void) {
 	LCD_On(1);
 	Delay(20);
 	LCD_Clear();
-
-	
 	
 	GPIOD->ODR = 0;	
-	
+
 	
 	// Stores key press
 	char keyPressed[2];
@@ -251,9 +365,13 @@ int main (void) {
 		BUZZ_Trig(0);
 		
 		// Outputs voltage is first button is selected
-		if (menu1 == 1) {
+		if(menu1 == 1) {
 			calcVal = voltage(value);
+			calcVal = autoRange(calcVal,1);
 			sprintf(suffix,"V");
+			if(calcVal < 1 && calcVal > -1) {
+				menu2 = 0x10;
+			}
 		}
 		if(menu1 == 2) {
 			calcVal = current(value);
@@ -263,29 +381,32 @@ int main (void) {
 			calcVal = resistance(value);
 			sprintf(suffix,"%c", 222);
 		}
-		if (menu2 == 0x10) {
+		if(menu2 == 0x10 && menu1 != 0) {
 			calcVal = calcVal*1000.0;
 			sprintf(unit,"m%s",suffix);
+			GPIOD->ODR |= (menu2 << 8); 
 		}
-		else	if (menu2 == 0x20) {
-			calcVal = calcVal*100.0;
+		else	if (menu2 == 0x20 && menu1 != 0) {
+			//calcVal = calcVal*100.0;
 			sprintf(unit,"c%s",suffix);
 		}
-		else	if (menu2 == 0x40) {
-		calcVal = calcVal*10.0;
-		sprintf(unit,"d%s",suffix);
+		else	if (menu2 == 0x40 && menu1 != 0) {
+		//calcVal = calcVal*1000.0;
+			sprintf(unit,"d%s",suffix);
 		}
-
 		else {
 			sprintf(unit,"%s",suffix);
+			menu2 = 0x00;
 		}
 		
-		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
+		if(menu1 == 0 && menu2 == 0) {
+			GPIOD->ODR = 0x00; 
+		}
+		
+		sprintf(keyPressed,"%.3f%s", calcVal, unit); //Outputs dp
 		LCD_PutS(keyPressed); //Outputs to LCD
 		
-		
-		
-		Delay(500);
+		Delay(100);
 		
 		LCD_Clear();
 		

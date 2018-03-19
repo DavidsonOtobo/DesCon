@@ -21,7 +21,7 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-M:\w2k\DesCon\DesCon\ADC_LEDs K5\ADC_LEDs\ADC_LEDs.uvprojx
+H:\DesCon\DesCon\ADC_LEDs K5\ADC_LEDs\ADC_LEDs.uvprojx
 Project File Date:  02/09/2018
 
 <h2>Output:</h2>
@@ -29,56 +29,68 @@ Project File Date:  02/09/2018
 Rebuild target 'STM32F407 FLASH'
 compiling LED.c...
 compiling LCD.c...
-compiling ADC_LEDs.c...
-ADC_LEDs.c(132): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(133): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	V2 = (Vout - 1.5)/0.15;
-ADC_LEDs.c(135): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if (V2 > 9.99 || V2 == -10.0) {
-ADC_LEDs.c(138): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if (V2 >= 9.5 || V2 <= -9.5) {
-ADC_LEDs.c(151): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(152): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	V1 = ((Vout - 1.5)/0.15)/10;
-ADC_LEDs.c(154): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if (V1 > 0.99 || V1 == -1.0) {
-ADC_LEDs.c(157): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if (V1 >= 0.8 || V1 <= -0.8) {
-ADC_LEDs.c(149): warning:  #177-D: variable "R1"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(149): warning:  #177-D: variable "R2"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(149): warning:  #177-D: variable "R3"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(149): warning:  #177-D: variable "Rgain"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(149): warning:  #177-D: variable "Rf"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(149): warning:  #177-D: variable "Vref"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(149): warning:  #177-D: variable "V2"  was declared but never referenced
-  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(170): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	float Vout = ((float)reading/4096.0)*3.0;
-ADC_LEDs.c(171): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	float R = Vout/0.000532;
-ADC_LEDs.c(172): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	R = R/1.5;										//scaling factor  
-ADC_LEDs.c(267): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  			calcVal = calcVal*1000.0;
-ADC_LEDs.c(271): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  			calcVal = calcVal*100.0;
-ADC_LEDs.c(275): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		calcVal = calcVal*10.0;
-ADC_LEDs.c: 21 warnings, 0 errors
 assembling startup_stm32f407xx.s...
+compiling ADC_LEDs.c...
+ADC_LEDs.c(185): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if ((value < 0.001 && value > - 0.001 && measurement == 1) || (value > 2.99 && measurement == 3) || muxState == 1) {
+ADC_LEDs.c(185): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if ((value < 0.001 && value > - 0.001 && measurement == 1) || (value > 2.99 && measurement == 3) || muxState == 1) {
+ADC_LEDs.c(190): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/1000.0;
+ADC_LEDs.c(192): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if ((value < 0.1 && value > - 0.1 && measurement == 1) || (value > 2.99 && measurement == 3) || muxState == 2) {
+ADC_LEDs.c(192): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if ((value < 0.1 && value > - 0.1 && measurement == 1) || (value > 2.99 && measurement == 3) || muxState == 2) {
+ADC_LEDs.c(197): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/100.0;
+ADC_LEDs.c(199): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if ((value < 1 && value > - 1 && measurement == 1) || (value > 2.99 && measurement == 3) || muxState == 3) {
+ADC_LEDs.c(204): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/10.0;
+ADC_LEDs.c(222): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+ADC_LEDs.c(223): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	V2 = (Vout - 1.5)/0.15;
+ADC_LEDs.c(225): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (V2 > 9.99 || V2 == -10.0) {
+ADC_LEDs.c(228): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (V2 >= 9.5 || V2 <= -9.5) {
+ADC_LEDs.c(241): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+ADC_LEDs.c(242): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	V1 = ((Vout - 1.5)/0.15)/10;
+ADC_LEDs.c(244): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (V1 > 0.99 || V1 == -1.0) {
+ADC_LEDs.c(247): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (V1 >= 0.8 || V1 <= -0.8) {
+ADC_LEDs.c(239): warning:  #177-D: variable "R1"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(239): warning:  #177-D: variable "R2"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(239): warning:  #177-D: variable "R3"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(239): warning:  #177-D: variable "Rgain"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(239): warning:  #177-D: variable "Rf"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(239): warning:  #177-D: variable "Vref"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(239): warning:  #177-D: variable "V2"  was declared but never referenced
+  	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
+ADC_LEDs.c(259): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	float Vout = ((float)reading/4096.0)*3.0;
+ADC_LEDs.c(261): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	float R = Vout/0.000532;
+ADC_LEDs.c(262): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	R = R/1.5;										//scaling factor  
+ADC_LEDs.c(361): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			calcVal = calcVal*1000.0;
+ADC_LEDs.c: 27 warnings, 0 errors
 compiling SWT.c...
 compiling system_stm32f4xx.c...
 linking...
-Program Size: Code=10632 RO-data=708 RW-data=8 ZI-data=1632  
-".\ADC_LEDs.axf" - 0 Error(s), 21 Warning(s).
+Program Size: Code=11444 RO-data=708 RW-data=12 ZI-data=1636  
+".\ADC_LEDs.axf" - 0 Error(s), 27 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -104,10 +116,10 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.0.1
 
    * Component: Keil::Device:Startup:2.6.0
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
-      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
-      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 Build Time Elapsed:  00:00:05
 </pre>
