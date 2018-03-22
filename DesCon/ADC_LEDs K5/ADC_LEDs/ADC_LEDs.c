@@ -135,7 +135,7 @@ void A0_Trig(int type) {
 		GPIOE->BSRR|=(1UL << 6)<<16;
 	}
 	// Turns on A0
-	else if (type == 1) {
+	else if (type == 1) { 
 		GPIOE->BSRR|=(1UL << 6);
 	}
 }
@@ -194,18 +194,24 @@ unsigned int read_ADC1 (void) {
  *----------------------------------------------------------------------------*/
 float autoRange (float value, int measurement)
 {	
+	/*float V2,Vout;
+	Vout = ((float)value/4096.0)*3.0; // Gets value of voltage from ADC
+	V2 = ((Vout - 1.5)/0.15)-0.2;*/
+	
 	float checkVal = value;
+	//muxState = 0; //defaults at 0
 	// Checks value at input after going through gains
-	if (muxState == 1) {
+	if (muxState == 1 && measurement == 1) {
 		checkVal = value/1000.0;
 	}
-	else if (muxState == 2) {
+	else if (muxState == 2 && measurement == 1) {
 		checkVal = value/100.0;
 	}
-	else if (muxState == 3) {
+	else if (muxState == 3 && measurement == 1) {
 		checkVal = value/10.0;
 	}
 	
+	// Voltage
 	// Gain of 1000 if between +-0.9mV
 	if ((checkVal < 0.0009 && checkVal > - 0.0009 && measurement == 1) || 
 		(checkVal > 2.99 && measurement == 3)) {
@@ -216,8 +222,8 @@ float autoRange (float value, int measurement)
 		return value/1000.0;
 	}
 		
-	// Gain of 100 if between +-90mV
-	else if ((checkVal < 0.091 && checkVal > - 0.091 && measurement == 1)
+	// Gain of 100 if between +-9mV
+	else if ((checkVal < 0.09 && checkVal > - 0.09 && measurement == 1)
 		|| (checkVal > 2.99 && checkVal == 3)) {
 		A2_Trig(0);
 		A1_Trig(1);
@@ -228,7 +234,6 @@ float autoRange (float value, int measurement)
 		
 	// Gain of 10 if between +-900mV
 	else if ((checkVal < 0.9 && checkVal > -0.9 && measurement == 1) 
-		//&& !(checkVal < 0.09 && checkVal > - 0.09 && measurement == 1))
 		|| (checkVal > 2.99 && measurement == 3)) {
 		A2_Trig(0);
 		A1_Trig(0);
@@ -237,13 +242,57 @@ float autoRange (float value, int measurement)
 		return value/10.0;
 	}
 		// No gain
-	else {
+	else if (measurement == 1){
 		A2_Trig(0);
 		A1_Trig(0);
 		A0_Trig(0); 
 		muxState = 0;
 		return value;
 	}
+	
+	//Resistance
+	// Increases the gain when the voltage is 3V
+	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
+		muxState = muxState + 1;
+	}
+	// Decreases the gain when the voltage is 3V
+	else if (checkVal > 1.4 && checkVal < 1.6 && measurement == 3) {
+		muxState = muxState - 1;
+	}
+	
+	// No gain state
+	if (muxState == 0 && measurement == 3) {
+		A2_Trig(0);
+		A1_Trig(0);
+		A0_Trig(0);
+		return value/0.000988;
+	}
+	// Increments by 1 in binary if muxState increases and vice versa
+	else if (muxState == 1 && measurement == 3) {
+		A2_Trig(0);
+		A1_Trig(0);
+		A0_Trig(1);
+		return value/0.0005332;
+	}
+	else if (muxState == 2 && measurement == 3) {
+		A2_Trig(0);
+		A1_Trig(1);
+		A0_Trig(0);
+		return value/0.00004771;
+	}
+	else if (muxState == 3 && measurement == 3) {
+		A2_Trig(0);
+		A1_Trig(1);
+		A0_Trig(1);
+		return value/0.00002471;
+	}
+	else if (muxState == 4 && measurement == 3) {
+		A2_Trig(1);
+		A1_Trig(0);
+		A0_Trig(0);
+		return value/0.00000084;
+	}	
+	
 
 }
 
@@ -253,7 +302,7 @@ float voltage (float reading)
 {
 	float V2,Vout;
 	
-	Vout = ((float)reading/4096.0)*2.9; // Gets value of voltage from ADC
+	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
 	V2 = ((Vout - 1.5)/0.15)-0.2;
 	
 	// Turns on buzzer if the voltage is out of range
@@ -298,8 +347,7 @@ float current (float reading)
 float resistance (float reading)
 {
 	float Vout = ((float)reading/4096.0)*3.0;
-	Vout = autoRange(Vout,3);
-	float R = Vout/0.000532;
+	float R =  autoRange(Vout, 3); // Does autoranging for resistance
 	R = R/1.5;										//scaling factor  
 	
 	// Turns on buzzer if the resistance is out of range
@@ -379,7 +427,7 @@ int main (void) {
 		}			
 		
 		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
-		//value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
+	//	value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
 		
 		BUZZ_Trig(0); // Turns off buzzer
 		
@@ -403,6 +451,7 @@ int main (void) {
 		}
 		// Outputs resistance if second button is selected
 		if(menu1 == 4) {
+			
 			calcVal = resistance(value); // gets resistance
 			sprintf(suffix,"%c", 222); // The current suffix
 		}
@@ -447,8 +496,6 @@ int main (void) {
 		Delay(1000);
 		
 		LCD_Clear();
-		
-		//sprintf(unit,"");
   
 	}
 }

@@ -30,83 +30,101 @@ Rebuild target 'STM32F407 FLASH'
 compiling LED.c...
 compiling LCD.c...
 compiling ADC_LEDs.c...
-ADC_LEDs.c(200): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(205): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		checkVal = value/1000.0;
-ADC_LEDs.c(203): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(208): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		checkVal = value/100.0;
-ADC_LEDs.c(206): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		checkVal = value/10.0;
-ADC_LEDs.c(210): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if ((checkVal < 0.0009 && checkVal > - 0.0009 && measurement == 1) || 
 ADC_LEDs.c(211): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		(checkVal > 2.99 && measurement == 3)) {
+  		checkVal = value/10.0;
 ADC_LEDs.c(216): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if ((checkVal < 0.0009 && checkVal > - 0.0009 && measurement == 1) || 
+ADC_LEDs.c(217): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		(checkVal > 2.99 && measurement == 3)) {
+ADC_LEDs.c(222): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/1000.0;
-ADC_LEDs.c(220): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if ((checkVal < 0.091 && checkVal > - 0.091 && measurement == 1)
-ADC_LEDs.c(221): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		|| (checkVal > 2.99 && checkVal == 3)) {
 ADC_LEDs.c(226): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		return value/100.0;
-ADC_LEDs.c(230): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if ((checkVal < 0.9 && checkVal > -0.9 && measurement == 1) 
+  	else if ((checkVal < 0.09 && checkVal > - 0.09 && measurement == 1)
+ADC_LEDs.c(227): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		|| (checkVal > 2.99 && checkVal == 3)) {
 ADC_LEDs.c(232): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		|| (checkVal > 2.99 && measurement == 3)) {
+  		return value/100.0;
+ADC_LEDs.c(236): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if ((checkVal < 0.9 && checkVal > -0.9 && measurement == 1) 
 ADC_LEDs.c(237): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		|| (checkVal > 2.99 && measurement == 3)) {
+ADC_LEDs.c(242): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/10.0;
-ADC_LEDs.c(256): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Vout = ((float)reading/4096.0)*2.9; // Gets value of voltage from ADC
-ADC_LEDs.c(257): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	V2 = ((Vout - 1.5)/0.15)-0.2;
-ADC_LEDs.c(260): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if (V2 > 9.99 || V2 == -10.0) {
-ADC_LEDs.c(264): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if (V2 >= 9.5 || V2 <= -9.5) {
-ADC_LEDs.c(279): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(280): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	V1 = ((Vout - 1.5)/0.15)/10;
-ADC_LEDs.c(283): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if (V1 > 0.99 || V1 == -1.0) {
+ADC_LEDs.c(255): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
+ADC_LEDs.c(255): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
+ADC_LEDs.c(259): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (checkVal > 1.4 && checkVal < 1.6 && measurement == 3) {
+ADC_LEDs.c(259): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (checkVal > 1.4 && checkVal < 1.6 && measurement == 3) {
+ADC_LEDs.c(268): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/0.000988;
+ADC_LEDs.c(275): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/0.0005332;
+ADC_LEDs.c(281): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/0.00004771;
 ADC_LEDs.c(287): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/0.00002471;
+ADC_LEDs.c(293): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/0.00000084;
+ADC_LEDs.c(297): warning:  #940-D: missing return statement at end of non-void function "autoRange" 
+  }
+ADC_LEDs.c(305): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+ADC_LEDs.c(306): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	V2 = ((Vout - 1.5)/0.15)-0.2;
+ADC_LEDs.c(309): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (V2 > 9.99 || V2 == -10.0) {
+ADC_LEDs.c(313): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (V2 >= 9.5 || V2 <= -9.5) {
+ADC_LEDs.c(328): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
+ADC_LEDs.c(329): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	V1 = ((Vout - 1.5)/0.15)/10;
+ADC_LEDs.c(332): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (V1 > 0.99 || V1 == -1.0) {
+ADC_LEDs.c(336): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	else if (V1 >= 0.8 || V1 <= -0.8) {
-ADC_LEDs.c(277): warning:  #177-D: variable "R1"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "R1"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(277): warning:  #177-D: variable "R2"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "R2"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(277): warning:  #177-D: variable "R3"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "R3"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(277): warning:  #177-D: variable "Rgain"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "Rgain"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(277): warning:  #177-D: variable "Rf"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "Rf"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(277): warning:  #177-D: variable "Vref"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "Vref"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(277): warning:  #177-D: variable "V2"  was declared but never referenced
+ADC_LEDs.c(326): warning:  #177-D: variable "V2"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(300): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(349): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	float Vout = ((float)reading/4096.0)*3.0;
-ADC_LEDs.c(302): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	float R = Vout/0.000532;
-ADC_LEDs.c(303): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(351): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	R = R/1.5;										//scaling factor  
-ADC_LEDs.c(414): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(463): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   			calcVal = calcVal*1000.0; // converts to mili
-ADC_LEDs.c: 31 warnings, 0 errors
+ADC_LEDs.c: 40 warnings, 0 errors
 assembling startup_stm32f407xx.s...
 compiling SWT.c...
 compiling system_stm32f4xx.c...
 linking...
-Program Size: Code=11424 RO-data=716 RW-data=12 ZI-data=1636  
-".\ADC_LEDs.axf" - 0 Error(s), 31 Warning(s).
+Program Size: Code=11944 RO-data=716 RW-data=12 ZI-data=1636  
+".\ADC_LEDs.axf" - 0 Error(s), 40 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
-                http://www.keil.com/pack/ARM.CMSIS.5.0.1.pack
-                ARM::CMSIS:CORE:5.0.1
+                http://www.keil.com/pack/ARM.CMSIS.5.2.0.pack
+                ARM::CMSIS:CORE:5.0.2
                 CMSIS (Cortex Microcontroller Software Interface Standard)
-   * Component: CORE Version: 5.0.1
+   * Component: CORE Version: 5.0.2
 
 Package Vendor: Keil
                 http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.11.0.pack
@@ -116,18 +134,18 @@ Package Vendor: Keil
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_STM32F407_FLASH
-  C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include
+  C:\KEIL_V5\ARM\PACK\ARM\CMSIS\5.2.0\CMSIS\Include
   C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
 
-   * Component: ARM::CMSIS:CORE:5.0.1
+   * Component: ARM::CMSIS:CORE:5.0.2
 
    * Component: Keil::Device:Startup:2.6.0
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
       Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 Build Time Elapsed:  00:00:05
 </pre>
