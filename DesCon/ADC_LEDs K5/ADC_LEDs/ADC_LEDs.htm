@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\ADC_LEDs.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\ADC_LEDs.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Thu Mar 22 16:45:26 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Fri Mar 23 16:25:48 2018
 <BR><P>
 <H3>Maximum Stack Usage =        320 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -282,7 +282,7 @@ Global Symbols
 <P><STRONG><a name="[f7]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[77]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 168 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; __2sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -358,7 +358,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 </UL>
 
 <P><STRONG><a name="[89]"></a>A2_Trig</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, adc_leds.o(.text))
@@ -383,11 +383,12 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[83]"></a>autoRange</STRONG> (Thumb, 1228 bytes, Stack size 32 bytes, adc_leds.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = autoRange &rArr; __aeabi_cdcmple
+<P><STRONG><a name="[83]"></a>autoRange</STRONG> (Thumb, 1800 bytes, Stack size 40 bytes, adc_leds.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = autoRange &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
@@ -395,32 +396,33 @@ Global Symbols
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;A1_Trig
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;A2_Trig
 </UL>
-<BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
+<BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 </UL>
 
-<P><STRONG><a name="[8c]"></a>voltage</STRONG> (Thumb, 262 bytes, Stack size 48 bytes, adc_leds.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = voltage &rArr; __aeabi_dmul
+<P><STRONG><a name="[8d]"></a>voltage</STRONG> (Thumb, 272 bytes, Stack size 48 bytes, adc_leds.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = voltage &rArr; autoRange &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmpeq
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BUZZ_Trig
 </UL>
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[90]"></a>current</STRONG> (Thumb, 430 bytes, Stack size 48 bytes, adc_leds.o(.text))
+<P><STRONG><a name="[90]"></a>current</STRONG> (Thumb, 262 bytes, Stack size 48 bytes, adc_leds.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = current &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmpeq
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
@@ -432,10 +434,10 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[91]"></a>resistance</STRONG> (Thumb, 146 bytes, Stack size 48 bytes, adc_leds.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = resistance &rArr; autoRange &rArr; __aeabi_cdcmple
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = resistance &rArr; autoRange &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
@@ -444,12 +446,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[78]"></a>main</STRONG> (Thumb, 586 bytes, Stack size 40 bytes, adc_leds.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 168 + Unknown Stack Size
+<P><STRONG><a name="[78]"></a>main</STRONG> (Thumb, 802 bytes, Stack size 48 bytes, adc_leds.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = main &rArr; __2sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemCoreClockUpdate
@@ -463,8 +465,7 @@ Global Symbols
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Clear
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
-<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;read_ADC1
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ADC1_init
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BUZZ_Trig
@@ -1167,7 +1168,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 </UL>
 
@@ -1194,7 +1195,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 </UL>
 
@@ -1207,7 +1208,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = __aeabi_cdcmpeq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 </UL>
 
 <P><STRONG><a name="[cd]"></a>_dcmpeq</STRONG> (Thumb, 120 bytes, Stack size 32 bytes, deqf.o(x$fpl$deqf), UNUSED)
@@ -1219,7 +1220,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = __aeabi_cdcmple
 </UL>
 <BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 </UL>
 
@@ -1232,13 +1233,14 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_drcmple
 </UL>
 
-<P><STRONG><a name="[8d]"></a>__aeabi_dmul</STRONG> (Thumb, 0 bytes, Stack size 32 bytes, dmul.o(x$fpl$dmul))
+<P><STRONG><a name="[8c]"></a>__aeabi_dmul</STRONG> (Thumb, 0 bytes, Stack size 32 bytes, dmul.o(x$fpl$dmul))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = __aeabi_dmul
 </UL>
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 </UL>
 
 <P><STRONG><a name="[d0]"></a>_dmul</STRONG> (Thumb, 332 bytes, Stack size 32 bytes, dmul.o(x$fpl$dmul), UNUSED)
@@ -1267,7 +1269,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __aeabi_cdrcmple
 </UL>
 <BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 </UL>
 
@@ -1279,7 +1281,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = __aeabi_dsub
 </UL>
 <BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 </UL>
 
 <P><STRONG><a name="[d3]"></a>_dsub</STRONG> (Thumb, 464 bytes, Stack size 32 bytes, daddsub_clz.o(x$fpl$dsub), UNUSED)
@@ -1293,7 +1295,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;resistance
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;current
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;voltage
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;autoRange
 </UL>
 

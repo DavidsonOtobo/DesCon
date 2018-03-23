@@ -219,6 +219,7 @@ float autoRange (float value, int measurement)
 		A1_Trig(1);
 		A0_Trig(1);
 		muxState = 1;
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value/1000.0;
 	}
 		
@@ -229,6 +230,7 @@ float autoRange (float value, int measurement)
 		A1_Trig(1);
 		A0_Trig(0);
 		muxState = 2;
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value/100.0;
 	}
 		
@@ -239,6 +241,7 @@ float autoRange (float value, int measurement)
 		A1_Trig(0);
 		A0_Trig(1);
 		muxState = 3;
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value/10.0;
 	}
 		// No gain
@@ -247,6 +250,7 @@ float autoRange (float value, int measurement)
 		A1_Trig(0);
 		A0_Trig(0); 
 		muxState = 0;
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value;
 	}
 	
@@ -256,7 +260,7 @@ float autoRange (float value, int measurement)
 		muxState = muxState + 1;
 	}
 	// Decreases the gain when the voltage is 3V
-	else if (checkVal > 1.4 && checkVal < 1.6 && measurement == 3) {
+	else if (checkVal > 1.3 && checkVal < 1.6 && measurement == 3) {
 		muxState = muxState - 1;
 	}
 	
@@ -265,6 +269,7 @@ float autoRange (float value, int measurement)
 		A2_Trig(0);
 		A1_Trig(0);
 		A0_Trig(0);
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value/0.000988;
 	}
 	// Increments by 1 in binary if muxState increases and vice versa
@@ -272,24 +277,28 @@ float autoRange (float value, int measurement)
 		A2_Trig(0);
 		A1_Trig(0);
 		A0_Trig(1);
+		value = (value/3.0) * 3.0225; // Tweaks to the resolution for precision
 		return value/0.0005332;
 	}
 	else if (muxState == 2 && measurement == 3) {
 		A2_Trig(0);
 		A1_Trig(1);
 		A0_Trig(0);
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value/0.00004771;
 	}
 	else if (muxState == 3 && measurement == 3) {
 		A2_Trig(0);
 		A1_Trig(1);
 		A0_Trig(1);
+		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
 		return value/0.00002471;
 	}
 	else if (muxState == 4 && measurement == 3) {
 		A2_Trig(1);
 		A1_Trig(0);
 		A0_Trig(0);
+		value = (value/3.0) * 2.729; // Tweaks to the resolution for precision
 		return value/0.00000084;
 	}	
 	
@@ -304,6 +313,7 @@ float voltage (float reading)
 	
 	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
 	V2 = ((Vout - 1.5)/0.15)-0.2;
+	autoRange(V2, 1); // does autoranging on voltage
 	
 	// Turns on buzzer if the voltage is out of range
 	if (V2 > 9.99 || V2 == -10.0) {
@@ -375,6 +385,20 @@ int main (void) {
 	int32_t menu = 0; // Menu of buttons
 	int32_t menu1 = 0; // first half of the buttons
 	int32_t menu2 = 0; // second half of the buttons
+	int dataLogTimer = 0; // timer used to control data logging
+	// Stores display on LCD
+	char display[2];
+	// Represents unit of measurement
+	char unit[2] = "  ";
+	char suffix[1] = " ";
+	char dataLog[1]; // Data logger values
+	int dataLogCount = 0; // Iterates through data logger
+	
+
+	strcpy(dataLog, "\0"); // Defaults all data as NULL
+
+	
+	dataLogCount = 0;
 	
   SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
@@ -402,13 +426,6 @@ int main (void) {
 	// Sets buttons to 0
 	GPIOD->ODR = 0;	
 
-	
-	// Stores key press
-	char keyPressed[2];
-	// Represents unit of measurement
-	char unit[2] = "  ";
-	char suffix[1] = " ";
-	
 	// Gets initial value of the buttons
 	uint32_t default_btns = SWT_Get(); 
 	
@@ -434,7 +451,6 @@ int main (void) {
 		// Outputs voltage if first button is selected
 		if(menu1 == 1) {
 			calcVal = voltage(value); //gets voltage
-			calcVal = autoRange(calcVal,1); // uses autoranging
 			sprintf(suffix,"V"); // The voltage suffix
 			// Sets menu 2 if autoranging occurs
 			if(calcVal < 1 && calcVal > -1) {
@@ -479,21 +495,38 @@ int main (void) {
 			sprintf(unit,"%s",suffix); // Adds no units
 			GPIOD->ODR |= (menu2 << 8) << 16; // Turns light off
 		}
+		// Turns on datalogger
+		else	if (menu2 == 0x80 && menu1 == 0) {
+			dataLogCount = 0; // Starts from first value in array
+			LCD_Clear();
+			Delay(100);
+			LCD_PutS(dataLog); // Displays value on LCD
+
+		}
+		
 		else {
 			sprintf(unit,"%s",suffix);
 			menu2 = 0x00;
 			GPIOD->ODR |= (menu2 << 8) << 16; // Turns light off
 		}
 		
-		/*if(menu1 == 0 && menu2 == 0) {
-			GPIOD->ODR = 0x00; 
-		}*/
+		
+		sprintf(display,"%.2f%s", calcVal, unit); //Outputs dp
+		LCD_PutS(display); //Outputs to LCD
+		
+		// Data Logging functionality
+		dataLogTimer = dataLogTimer + 1; // Increments timer every 100 ms
+		
+		// If menu1 is set the datalogger works
+		if (dataLogTimer == 50 && menu1 != 0){ // data logs every 5 seconds
+			sprintf(dataLog,"%s",display); // Adds display to data logger
+			dataLogCount++; // increments through 10 values
+			dataLogTimer = 0; // resets timer
+
+		}
 		
 		
-		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
-		LCD_PutS(keyPressed); //Outputs to LCD
-		
-		Delay(1000);
+		Delay(100);
 		
 		LCD_Clear();
   

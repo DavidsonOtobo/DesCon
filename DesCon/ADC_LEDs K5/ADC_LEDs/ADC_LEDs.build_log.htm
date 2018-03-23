@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.23.0.0
 Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Support The Flex license: MDK-ARM Professional: 100 user(s) (mdk_pro) Operation stops: 22 Mar 2018
+License Information: Support The Flex license: MDK-ARM Professional: 100 user(s) (mdk_pro) Operation stops: 13 Mar 2019
  
 Tool Versions:
 Toolchain:       MDK-ARM Professional: 100 user(s)  Version: 5.23
@@ -21,8 +21,8 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-H:\DesCon\DesCon\ADC_LEDs K5\ADC_LEDs\ADC_LEDs.uvprojx
-Project File Date:  03/20/2018
+\\userfs\do575\w2k\DesCon\DesCon\ADC_LEDs K5\ADC_LEDs\ADC_LEDs.uvprojx
+Project File Date:  03/23/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\KEIL_V5\ARM\ARMCC\Bin'
@@ -41,82 +41,100 @@ ADC_LEDs.c(216): warning:  #1035-D: single-precision operand implicitly converte
 ADC_LEDs.c(217): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		(checkVal > 2.99 && measurement == 3)) {
 ADC_LEDs.c(222): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(223): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/1000.0;
-ADC_LEDs.c(226): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if ((checkVal < 0.09 && checkVal > - 0.09 && measurement == 1)
 ADC_LEDs.c(227): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if ((checkVal < 0.09 && checkVal > - 0.09 && measurement == 1)
+ADC_LEDs.c(228): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		|| (checkVal > 2.99 && checkVal == 3)) {
-ADC_LEDs.c(232): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(233): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(234): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/100.0;
-ADC_LEDs.c(236): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(238): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	else if ((checkVal < 0.9 && checkVal > -0.9 && measurement == 1) 
-ADC_LEDs.c(237): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(239): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		|| (checkVal > 2.99 && measurement == 3)) {
-ADC_LEDs.c(242): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(244): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(245): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/10.0;
-ADC_LEDs.c(255): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
-ADC_LEDs.c(255): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(253): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(259): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
 ADC_LEDs.c(259): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if (checkVal > 1.4 && checkVal < 1.6 && measurement == 3) {
-ADC_LEDs.c(259): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  	else if (checkVal > 1.4 && checkVal < 1.6 && measurement == 3) {
-ADC_LEDs.c(268): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
+ADC_LEDs.c(263): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (checkVal > 1.2 && checkVal < 1.6 && measurement == 3) {
+ADC_LEDs.c(263): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	else if (checkVal > 1.2 && checkVal < 1.6 && measurement == 3) {
+ADC_LEDs.c(272): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(273): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/0.000988;
-ADC_LEDs.c(275): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		return value/0.0005332;
+ADC_LEDs.c(280): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0225; // Tweaks to the resolution for precision
 ADC_LEDs.c(281): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  		return value/0.00004771;
+  		return value/0.0005332;
 ADC_LEDs.c(287): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(288): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		return value/0.00004771;
+ADC_LEDs.c(294): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
+ADC_LEDs.c(295): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/0.00002471;
-ADC_LEDs.c(293): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(301): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		value = (value/3.0) * 2.729; // Tweaks to the resolution for precision
+ADC_LEDs.c(302): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		return value/0.00000084;
-ADC_LEDs.c(297): warning:  #940-D: missing return statement at end of non-void function "autoRange" 
+ADC_LEDs.c(306): warning:  #940-D: missing return statement at end of non-void function "autoRange" 
   }
-ADC_LEDs.c(305): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(314): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(306): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(315): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	V2 = ((Vout - 1.5)/0.15)-0.2;
-ADC_LEDs.c(309): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(319): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if (V2 > 9.99 || V2 == -10.0) {
-ADC_LEDs.c(313): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(323): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	else if (V2 >= 9.5 || V2 <= -9.5) {
-ADC_LEDs.c(328): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(338): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-ADC_LEDs.c(329): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(339): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	V1 = ((Vout - 1.5)/0.15)/10;
-ADC_LEDs.c(332): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(342): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	if (V1 > 0.99 || V1 == -1.0) {
-ADC_LEDs.c(336): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(346): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	else if (V1 >= 0.8 || V1 <= -0.8) {
-ADC_LEDs.c(326): warning:  #177-D: variable "R1"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "R1"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(326): warning:  #177-D: variable "R2"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "R2"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(326): warning:  #177-D: variable "R3"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "R3"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(326): warning:  #177-D: variable "Rgain"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "Rgain"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(326): warning:  #177-D: variable "Rf"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "Rf"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(326): warning:  #177-D: variable "Vref"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "Vref"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(326): warning:  #177-D: variable "V2"  was declared but never referenced
+ADC_LEDs.c(336): warning:  #177-D: variable "V2"  was declared but never referenced
   	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-ADC_LEDs.c(349): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(359): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	float Vout = ((float)reading/4096.0)*3.0;
-ADC_LEDs.c(351): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(361): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	R = R/1.5;										//scaling factor  
-ADC_LEDs.c(463): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+ADC_LEDs.c(479): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   			calcVal = calcVal*1000.0; // converts to mili
-ADC_LEDs.c: 40 warnings, 0 errors
+ADC_LEDs.c: 49 warnings, 0 errors
 assembling startup_stm32f407xx.s...
 compiling SWT.c...
 compiling system_stm32f4xx.c...
 linking...
-Program Size: Code=11944 RO-data=716 RW-data=12 ZI-data=1636  
-".\ADC_LEDs.axf" - 0 Error(s), 40 Warning(s).
+Program Size: Code=12512 RO-data=716 RW-data=12 ZI-data=1636  
+".\ADC_LEDs.axf" - 0 Error(s), 49 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -142,12 +160,12 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.0.2
 
    * Component: Keil::Device:Startup:2.6.0
-      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
-Build Time Elapsed:  00:00:05
+Build Time Elapsed:  00:00:08
 </pre>
 </body>
 </html>
