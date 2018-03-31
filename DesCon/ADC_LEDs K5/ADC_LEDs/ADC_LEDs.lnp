@@ -3,6 +3,7 @@
 ".\adc_leds.o"
 ".\lcd.o"
 ".\swt.o"
+".\setup.o"
 ".\startup_stm32f407xx.o"
 ".\system_stm32f4xx.o"
 --strict --scatter ".\ADC_LEDs.sct"

@@ -45,4 +45,6 @@ extern void LCD_PutChar (unsigned int c);
 extern void LCD_PutS (const char * s);
 extern void LCD_GotoXY (unsigned int x, unsigned int y);
 
+//#define A 1
+
 #endif
