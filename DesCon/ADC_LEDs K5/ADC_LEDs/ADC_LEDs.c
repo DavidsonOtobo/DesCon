@@ -4,229 +4,162 @@
 reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 
 
-#include <stdio.h>
-#include "STM32F4xx.h"
-#include "LED.h"
-#include "LCD.h"
-#include "SWT.h"
-#include "math.h"
-#include "string.h"
-
-
-volatile uint32_t msTicks;                      /* counts 1ms timeTicks       */
-/*----------------------------------------------------------------------------
-  SysTick_Handler
- *----------------------------------------------------------------------------*/
-void SysTick_Handler(void) {
-  msTicks++;
-}
-
-/*----------------------------------------------------------------------------
-  delays number of tick Systicks (happens every 1 ms)
- *----------------------------------------------------------------------------*/
-void Delay (uint32_t dlyTicks) {                                              
-  uint32_t curTicks;
-
-  curTicks = msTicks;
-  while ((msTicks - curTicks) < dlyTicks);
-}
-
-
-/*----------------------------------------------------------------------------
-  Function that initializes Button pins
- *----------------------------------------------------------------------------*/
-void BTN_Init(void) {
-
-  RCC->AHB1ENR  |= RCC_AHB1ENR_GPIOAEN;              /* Enable GPIOA clock         */
-
-  GPIOA->MODER    &= ~((3UL << 2*0)  );         /* PA.0 is input              */
-  GPIOA->OSPEEDR  &= ~((3UL << 2*0)  );         /* PA.0 is 50MHz Fast Speed   */
-  GPIOA->OSPEEDR  |=  ((2UL << 2*0)  ); 
-  GPIOA->PUPDR    &= ~((3UL << 2*0)  );         /* PA.0 is no Pull up         */
-}
-
-/*----------------------------------------------------------------------------
-  Function that read Button pins
- *----------------------------------------------------------------------------*/
-uint32_t BTN_Get(void) {
-
- return (GPIOA->IDR & (1UL << 0));
-}
-
-/* Function to intiialise ADC1    */
-
-void ADC1_init(void) {
-	/* Enable clocks */
-	RCC->APB2ENR  |= RCC_APB2ENR_ADC1EN;
-	RCC->AHB1ENR  |= RCC_AHB1ENR_GPIOCEN;
-	
-	/* ADC12_IN14 is the channel we shall use. It is connected to 
-	 * PC4 which is connected to the board edge connectors */
-	GPIOC->MODER = 0x3 << (2 * 4);
-	GPIOC->PUPDR = 0;
-	
-	/* Set ADC to discontinuous conversion mode. */
-	ADC1->CR1 = 0x00;
-	ADC1->CR1 |= ADC_CR1_DISCEN;
-	
-	/* Ensure CR2 is set to zero. This means data will be right aligned, 
-	 * DMA is disabled and there are no extrnal triggers/injected channels */
-	ADC1->CR2 = 0x00;
-	
-	/* Set to one conversion at a time, and set that first conversion 
-	 * to come from channel 14 (connected to PC4) */
-	ADC1->SQR1 &= ~ADC_SQR1_L;
-	ADC1->SQR3 = 14 & ADC_SQR3_SQ1;
-	
-	/* Enable the ADC */
-	ADC1->CR2 |= ADC_CR2_ADON;
-}
-	
-/* function to read ADC and retun value */
-unsigned int read_ADC1 (void) {
-	/* set SWSTART to 1 to start conversion */
-	ADC1->CR2 |= ADC_CR2_SWSTART;
-	
-	/* Wait until End Of Conversion bit goes high */
-	while (!(ADC1->SR & ADC_SR_EOC));
-	
-	/* Return data value */
-	return (ADC1->DR);
-}
-
-// Outputs value of voltage
-float voltage (float reading)
-{
-	float V2,Vout;
-
-	
-	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
-	V2 = (Vout - 1.5)/0.15;
-	
-	return (V2);
-}
-
-float current (float reading)
-{
-	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-	R1 = 133333.33;
-	R2 = 100000.0;
-	Rf = 10000.0;
-	Rgain = 20000.0;
-	Vref = 1.5;
-	V2 = 0.0;
-	
-	Vout = ((float)reading/4096.0)*2.95; // Gets value of voltage from ADC
-	V1 = (Vout-Vref)/((1+(2*Rf)/Rgain)*(R2/R1))+V2; 
-	
-	return (V1);
-}
-
-float resistance (float reading)
-{
-
-	float Vout = ((float)reading/4096.0)*3.0;
-	float R = Vout/0.000532;
-	R = R/1.5;										//scaling factor  
-	
-	return (R);
-}
-
+#include "Setup.h"
+#include "Functions.h"
 
 /*----------------------------------------------------------------------------
   MAIN function
  *----------------------------------------------------------------------------*/
 int main (void) {
  
-	uint32_t value = 0;
-	float calcVal = 0.0;
-	uint32_t btns = 0;
-	int32_t menu = 0;
-	int32_t menu1 = 0;
-	int32_t menu2 = 0;
-
-  SystemCoreClockUpdate();                      /* Get Core Clock Frequency   */
-  if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
-    while (1);                                  /* Capture error              */
-  }
-
-	// Initializes LEDs, Buttons and ADC
-  LED_Init();
-  BTN_Init();  
-	ADC1_init();
-	SWT_Init();
-	
-	//Initializes LCD
-	LCD_Initpins();	
-	LCD_DriverOn();
-	
-	Delay(10);
-	LCD_Init();
-	
-	LCD_DriverOn();
-	LCD_On(1);
-	Delay(20);
-	LCD_Clear();
-
-	
-	
-	GPIOD->ODR = 0;	
-	
-	
-	// Stores key press
-	char keyPressed[2];
+	//uint32_t value = 0; // Gets value from the ADC
+	//float calcVal = 0.0; // Stores output on the board
+//	uint32_t btns = 0; // gets button presses
+	//int32_t menu = 0; // Menu of buttons
+	//int32_t menu1 = 0; // first half of the buttons
+	//int32_t menu2 = 0; // second half of the buttons
+//	int dataLogTimer = 0; // timer used to control data logging
+	// Stores display on LCD
+	//char display[2];
 	// Represents unit of measurement
-	char unit[2] = "  ";
-	char suffix[1] = " ";
+	//char unit[2] = "  ";
+	//char suffix[1] = " ";
+	//char dataLog[1]; // Data logger values
+	//int dataLogCount = 0; // Iterates through data logger
+
 	
-	uint32_t default_btns = SWT_Get(); 
- 
-  while(1) {      
+	Setup();
+	
 
-		/* Loop forever               */
+	//strcpy(dataLog, "\0"); // Defaults all data as NULL
 
-		btns = SWT_Get(); //Gets value of button pressed
-		
-		if(btns != default_btns){
-			btns = GPIOD-> ODR ^ btns;  
-			GPIOD->ODR = btns; //Outputs button press to LEDs
-			menu = ((int)(btns >> 8));
-			menu1 = menu & 0x0F;
-			menu2 = menu & 0xF0;
-		}			
-		
-		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
-		//value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
-		
-		if (menu1 == 1) {
-			calcVal = voltage(value);
-			sprintf(suffix,"V");
-		}
-		if(menu1 == 2) {
-			calcVal = current(value);
-			sprintf(suffix,"A");
-		}
-		if(menu1 == 4) {
-			calcVal = resistance(value);
-			sprintf(suffix,"%c", 222);
-		}
-		if (menu2 == 0x10) {
-			calcVal = calcVal/1000.0;
-			sprintf(unit,"m%s",suffix);
-		}
-		else {
-			sprintf(unit,"%s",suffix);
-		}
-		
-		sprintf(keyPressed,"%.2f%s", calcVal, unit); //Outputs dp
-		LCD_PutS(keyPressed); //Outputs to LCD
-		GPIOB->BSRR|=(1UL << 4);
-		Delay(500);
-		LCD_Clear();
-		sprintf(unit,"");
-		GPIOB->BSRR|=(1UL << 4)<<16;
+	
+	//dataLogCount = 0;
+	
+	
+	//GPIOD->ODR = 0;	// Sets buttons to 0
 
-		}
+	
+	//uint32_t default_btns = SWT_Get(); // Gets initial value of the buttons
+	
+	
+	
+	while(1){
+		
+		startUpMenu();//Displays start up menu, user will choose mode with button
+		
+		mode(buttonPressed);
+		
+	}
+	
+	
+	
+ 	/* Loop forever */
+//  while(1) {      
+
+//		//Gets value of button pressed
+//		btns = SWT_Get();
+//		GPIOD->ODR = btns; //Outputs button press to LEDs
+//	//	menu = ((int)(btns >> 8)); // checks buttons and changes menu
+//		
+//		if(btns != default_btns){
+//			btns = GPIOD-> ODR ^ btns; // Stores buttons
+//			GPIOD->ODR = btns; //Outputs button press to LEDs
+//			menu = ((int)(btns >> 8)); // checks buttons and changes menu
+//			menu1 = menu & 0x0F; // Menu1 is the first 4 buttons
+//			menu2 = menu & 0xF0; // Menu 2 is the last 4 buttons
+//		}			
+//		
+
+//		
+//		
+//		
+//		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
+//	//	value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
+//		
+//		BUZZ_Trig(0); // Turns off buzzer
+//		
+//		// Outputs voltage if first button is selected
+//		if(menu1 == 1) {
+//			calcVal = voltage(value); //gets voltage
+//			sprintf(suffix,"V"); // The voltage suffix
+//			// Sets menu 2 if autoranging occurs
+//			if(calcVal < 1 && calcVal > -1) {
+//				menu2 = 0x10;
+//			}
+//			else{
+//				menu2 = 0x00;
+//			}
+//		}
+//		// Outputs current if second button is selected
+//		if(menu1 == 2) {
+//			calcVal = current(value); // gets current
+//			sprintf(suffix,"A"); // The current suffix
+//		}
+//		// Outputs resistance if second button is selected
+//		if(menu1 == 4) {
+//			
+//			calcVal = resistance(value); // gets resistance
+//			sprintf(suffix,"%c", 222); // The current suffix
+//		}
+//		
+//		// MENU 2
+//		// menu 2 only carries out functionality of menu1 is set
+//		//if button 1 is pressed change scale to milli
+//		if(menu2 == 0x10 && menu1 != 0) {
+//			calcVal = calcVal*1000.0; // converts to mili
+//			sprintf(unit,"m%s",suffix); // adds milli in front of unit
+//			GPIOD->ODR |= (menu2 << 8);  // Turns menu2 light on
+//		}
+//		//if button 2 is pressed change scale to centi
+//		else	if (menu2 == 0x20 && menu1 != 0) {
+//			//calcVal = calcVal*100.0;
+//			sprintf(unit,"c%s",suffix); // adds centi in front of unit
+//		}
+//		//if button 3 is pressed change scale to deci
+//		else	if (menu2 == 0x40 && menu1 != 0) {
+//		//calcVal = calcVal*1000.0;
+//			sprintf(unit,"d%s",suffix); // adds deci in front of unit
+//		}
+//		//if no button is pressed 
+//		else	if (menu2 == 0x00 && menu1 != 0) {
+//			sprintf(unit,"%s",suffix); // Adds no units
+//			GPIOD->ODR |= (menu2 << 8) << 16; // Turns light off
+//		}
+//		// Turns on datalogger
+//		else	if (menu2 == 0x80 && menu1 == 0) {
+//			dataLogCount = 0; // Starts from first value in array
+//			LCD_Clear();
+//			Delay(100);
+//			LCD_PutS(dataLog); // Displays value on LCD
+
+//		}
+//		
+//		else {
+//			sprintf(unit,"%s",suffix);
+//			menu2 = 0x00;
+//			GPIOD->ODR |= (menu2 << 8) << 16; // Turns light off
+//		}
+//		
+//		
+//		sprintf(display,"%.2f%s", calcVal, unit); //Outputs dp
+//		LCD_PutS(display); //Outputs to LCD
+//		
+//		// Data Logging functionality
+//		dataLogTimer = dataLogTimer + 1; // Increments timer every 100 ms
+//		
+//		// If menu1 is set the datalogger works
+//		if (dataLogTimer == 50 && menu1 != 0){ // data logs every 5 seconds
+//			sprintf(dataLog,"%s",display); // Adds display to data logger
+//			dataLogCount++; // increments through 10 values
+//			dataLogTimer = 0; // resets timer
+
+//		}
+
+//		
+//		//Delay(100);
+//		LCD_Clear();
   
-}
+//	}
 
+}

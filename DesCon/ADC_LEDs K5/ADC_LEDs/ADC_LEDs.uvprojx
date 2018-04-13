@@ -401,9 +401,19 @@
               <FilePath>..\..\Display\LCD.c</FilePath>
             </File>
             <File>
+              <FileName>Functions.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Functions.c</FilePath>
+            </File>
+            <File>
+              <FileName>Setup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Setup.c</FilePath>
+            </File>
+            <File>
               <FileName>SWT.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Switches\SWT.c</FilePath>
+              <FilePath>.\SWT.c</FilePath>
             </File>
           </Files>
         </Group>

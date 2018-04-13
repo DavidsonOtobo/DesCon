@@ -1,4 +1,5 @@
 .\adc_leds.o: ADC_LEDs.c
+.\adc_leds.o: Setup.h
 .\adc_leds.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\stdio.h
 .\adc_leds.o: C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\STM32F4xx.h
 .\adc_leds.o: C:\KEIL_V5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h
@@ -12,3 +13,4 @@
 .\adc_leds.o: SWT.h
 .\adc_leds.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\math.h
 .\adc_leds.o: C:\KEIL_V5\ARM\ARMCC\Bin\..\include\string.h
+.\adc_leds.o: Functions.h
