@@ -5,53 +5,73 @@ reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 
 
 #include "Setup.h"
+#include "Functions.h"
+
+
+
+
+
 
 /*----------------------------------------------------------------------------
   MAIN function
  *----------------------------------------------------------------------------*/
 int main (void) {
+	
+	float loggedData[10];
+	float *ptrLog;
+	
+	ptrLog = loggedData;
  
-	uint32_t value = 0; // Gets value from the ADC
-	float calcVal = 0.0; // Stores output on the board
-	uint32_t btns = 0; // gets button presses
-	int32_t menu = 0; // Menu of buttons
-	int32_t menu1 = 0; // first half of the buttons
-	int32_t menu2 = 0; // second half of the buttons
-	int dataLogTimer = 0; // timer used to control data logging
+	//uint32_t value = 0; // Gets value from the ADC
+	//float calcVal = 0.0; // Stores output on the board
+//	uint32_t btns = 0; // gets button presses
+	//int32_t menu = 0; // Menu of buttons
+	//int32_t menu1 = 0; // first half of the buttons
+	//int32_t menu2 = 0; // second half of the buttons
+//	int dataLogTimer = 0; // timer used to control data logging
 	// Stores display on LCD
-	char display[2];
+	//char display[2];
 	// Represents unit of measurement
-	char unit[2] = "  ";
-	char suffix[1] = " ";
-	char welcomeMes[10]; 
-	char opts[16];
-	char opts2[16];
-	char dataLog[1]; // Data logger values
-	int dataLogCount = 0; // Iterates through data logger
-	int scroll = 0;
+	//char unit[2] = "  ";
+	//char suffix[1] = " ";
+	//char dataLog[1]; // Data logger values
+	//int dataLogCount = 0; // Iterates through data logger
+
 	
 	Setup();
 	
 
-	strcpy(dataLog, "\0"); // Defaults all data as NULL
+	//strcpy(dataLog, "\0"); // Defaults all data as NULL
 
 	
-	dataLogCount = 0;
+	//dataLogCount = 0;
 	
-	// Sets buttons to 0
-	GPIOD->ODR = 0;	
+	
+	//GPIOD->ODR = 0;	// Sets buttons to 0
 
-	// Gets initial value of the buttons
-	uint32_t default_btns = SWT_Get(); 
+	
+	//uint32_t default_btns = SWT_Get(); // Gets initial value of the buttons
+	
+	
+	
+	while(1){
+		
+		startUpMenu();//Displays start up menu, user will choose mode with button
+		
+		mode(buttonPressed/*,loggedData*/);
+		
+	}
+	
+	
 	
  	/* Loop forever */
-  while(1) {      
+//  while(1) {      
 
-		//Gets value of button pressed
-		btns = SWT_Get();
-		GPIOD->ODR = btns; //Outputs button press to LEDs
-		menu = ((int)(btns >> 8)); // checks buttons and changes menu
-		
+//		//Gets value of button pressed
+//		btns = SWT_Get();
+//		GPIOD->ODR = btns; //Outputs button press to LEDs
+//	//	menu = ((int)(btns >> 8)); // checks buttons and changes menu
+//		
 //		if(btns != default_btns){
 //			btns = GPIOD-> ODR ^ btns; // Stores buttons
 //			GPIOD->ODR = btns; //Outputs button press to LEDs
@@ -59,27 +79,11 @@ int main (void) {
 //			menu1 = menu & 0x0F; // Menu1 is the first 4 buttons
 //			menu2 = menu & 0xF0; // Menu 2 is the last 4 buttons
 //		}			
-		
-		//First level of menu
-		sprintf(welcomeMes,"Multimeter");
-		LCD_PutS(welcomeMes);
-		LCD_GotoXY(0,1);
-		
-		if (menu == 0x80){
-		scroll = !scroll; //toggle menu
-		}
-		
-		if(scroll == 1){
-			sprintf(opts,"5=L,6=T,7=Other");
-			LCD_PutS(opts);
-		}
-		else{
-			sprintf(opts2,"1=V,2=A,3=%c,4=DL", 222);
-			LCD_PutS(opts2);
-		}
-		
-		
-		
+//		
+
+//		
+//		
+//		
 //		value = read_ADC1(); 												/* Gets a 12 bit right-aligned value from the ADC */
 //	//	value = (value << 4) & 0xFF00; 						/* Shift and AND to isolate bits 15-8 */
 //		
@@ -162,9 +166,10 @@ int main (void) {
 
 //		}
 
-		
-		//Delay(100);
-		LCD_Clear();
+//		
+//		//Delay(100);
+//		LCD_Clear();
   
-	}
+//	}
+
 }

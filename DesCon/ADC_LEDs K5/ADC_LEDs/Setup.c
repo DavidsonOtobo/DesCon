@@ -2,7 +2,9 @@
 
 volatile uint32_t msTicks;                      /* counts 1ms timeTicks       */
 int muxState = 0;
-
+int buttonPressed = 0;
+uint32_t adcValue = 0;
+//float loggedData[10];
 /*----------------------------------------------------------------------------
   SysTick_Handler
  *----------------------------------------------------------------------------*/
@@ -19,6 +21,21 @@ void Delay (uint32_t dlyTicks) {
   curTicks = msTicks;
   while ((msTicks - curTicks) < dlyTicks);
 }
+
+/* Function that initialises timer 3 interrupt for updating measurement value (delay = 0.25s)*/
+void TIM3I_Init (void)
+{
+	RCC->APB1ENR	|=	RCC_APB1ENR_TIM3EN; //enable timer 3 clock
+	
+	TIM3->PSC	=	599;  //prescaler	=	600	(PSC+1)
+	TIM3->ARR	=	15000; //auto	reload value	
+  TIM3->CR1	=	TIM_CR1_CEN; //enable	timer	
+  TIM3->DIER |= 1UL	<<0;	//enable interrupt	
+  NVIC_EnableIRQ(TIM3_IRQn); //enable	TIM3 interrupt in	NVIC	
+	
+}
+
+
 
 
 /*----------------------------------------------------------------------------
@@ -66,75 +83,7 @@ void A_Init(void) {
 }
 
 
-/*----------------------------------------------------------------------------
-  Function that triggers Buzzer
- *----------------------------------------------------------------------------*/
-void BUZZ_Trig(int type) {
-	// Turn off buzzer
-	if (type == 0) {
-		GPIOE->BSRR|=(1UL << 3)<<16;
-	}
-	// Beeping buzzer
-	else if (type == 1) {
-		GPIOE->BSRR|=(1UL << 3);
-		Delay(100);
-		GPIOE->BSRR|=(1UL << 3)<<16;
-	}
-	// Turn on buzzer
-	else if (type == 2) {
-		GPIOE->BSRR|=(1UL << 3);
-	}
-}
 
-/*----------------------------------------------------------------------------
-  Function that triggers A2
- *----------------------------------------------------------------------------*/
-void A2_Trig(int type) {
-	// Turns off buzzer
-	if (type == 0) {
-		GPIOE->BSRR|=(1UL << 4)<<16;
-	}
-	// Turns on buzzer
-	else if (type == 1) {
-		GPIOE->BSRR|=(1UL << 4);
-	}
-}
-
-/*----------------------------------------------------------------------------
-  Function that triggers A1
- *----------------------------------------------------------------------------*/
-void A1_Trig(int type) {
-	// Turns off A1
-	if (type == 0) {
-		GPIOE->BSRR|=(1UL << 5)<<16;
-	}
-	// Turns on A1
-	else if (type == 1) {
-		GPIOE->BSRR|=(1UL << 5);
-	}
-}
-
-/*----------------------------------------------------------------------------
-  Function that triggers A0
- *----------------------------------------------------------------------------*/
-void A0_Trig(int type) {
-	// Turns off A0
-	if (type == 0) {
-		GPIOE->BSRR|=(1UL << 6)<<16;
-	}
-	// Turns on A0
-	else if (type == 1) { 
-		GPIOE->BSRR|=(1UL << 6);
-	}
-}
-
-/*----------------------------------------------------------------------------
-  Function that read Button pins
- *----------------------------------------------------------------------------*/
-uint32_t BTN_Get(void) {
-
- return (GPIOA->IDR & (1UL << 0));
-}
 
 /* Function to intiialise ADC1    */
 
@@ -165,222 +114,7 @@ void ADC1_init(void) {
 	ADC1->CR2 |= ADC_CR2_ADON;
 }
 	
-/* function to read ADC and retun value */
-unsigned int read_ADC1 (void) {
-	/* set SWSTART to 1 to start conversion */
-	ADC1->CR2 |= ADC_CR2_SWSTART;
-	
-	/* Wait until End Of Conversion bit goes high */
-	while (!(ADC1->SR & ADC_SR_EOC));
-	
-	/* Return data value */
-	return (ADC1->DR);
-}
 
-/*----------------------------------------------------------------------------
-  Autoranging functionality
- *----------------------------------------------------------------------------*/
-float autoRange (float value, int measurement)
-{	
-	/*float V2,Vout;
-	Vout = ((float)value/4096.0)*3.0; // Gets value of voltage from ADC
-	V2 = ((Vout - 1.5)/0.15)-0.2;*/
-	
-	float checkVal = value;
-	//muxState = 0; //defaults at 0
-	// Checks value at input after going through gains
-	if (muxState == 1 && measurement == 1) {
-		checkVal = value/1000.0;
-	}
-	else if (muxState == 2 && measurement == 1) {
-		checkVal = value/100.0;
-	}
-	else if (muxState == 3 && measurement == 1) {
-		checkVal = value/10.0;
-	}
-	
-	// Voltage
-	// Gain of 1000 if between +-0.9mV
-	if ((checkVal < 0.0009 && checkVal > - 0.0009 && measurement == 1) || 
-		(checkVal > 2.99 && measurement == 3)) {
-		A2_Trig(0);
-		A1_Trig(1);
-		A0_Trig(1);
-		muxState = 1;
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value/1000.0;
-	}
-		
-	// Gain of 100 if between +-9mV
-	else if ((checkVal < 0.09 && checkVal > - 0.09 && measurement == 1)
-		|| (checkVal > 2.99 && checkVal == 3)) {
-		A2_Trig(0);
-		A1_Trig(1);
-		A0_Trig(0);
-		muxState = 2;
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value/100.0;
-	}
-		
-	// Gain of 10 if between +-900mV
-	else if ((checkVal < 0.9 && checkVal > -0.9 && measurement == 1) 
-		|| (checkVal > 2.99 && measurement == 3)) {
-		A2_Trig(0);
-		A1_Trig(0);
-		A0_Trig(1);
-		muxState = 3;
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value/10.0;
-	}
-		// No gain
-	else if (measurement == 1){
-		A2_Trig(0);
-		A1_Trig(0);
-		A0_Trig(0); 
-		muxState = 0;
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value;
-	}
-		//current//unfinshed, waiting for hardware team
-	if ( checkVal < 1 && checkVal > 1.8 && measurement == 2){
-		A2_Trig(0);
-		A1_Trig(0);
-		A0_Trig(1);
-		muxState = 1;
-		value = value;
-    return value;		
-	}
-	else if (measurement == 2){
-		A2_Trig(0);
-		A1_Trig(0);
-		A0_Trig(0);
-		muxState = 0;
-		value = value;
-    return value;		
-	}
-	
-	//Resistance
-	// Increases the gain when the voltage is 3V
-	if (checkVal > 2.7 && checkVal < 3.1 && measurement == 3) {
-		muxState = muxState + 1;
-	}
-	// Decreases the gain when the voltage is 3V
-	else if (checkVal > 1.3 && checkVal < 1.6 && measurement == 3) {
-		muxState = muxState - 1;
-	}
-	
-	// No gain state
-	if (muxState == 0 && measurement == 3) {
-		A2_Trig(0);
-		A1_Trig(0);
-		A0_Trig(0);
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value/0.000988;
-	}
-	// Increments by 1 in binary if muxState increases and vice versa
-	else if (muxState == 1 && measurement == 3) {
-		A2_Trig(0);
-		A1_Trig(0);
-		A0_Trig(1);
-		value = (value/3.0) * 3.0225; // Tweaks to the resolution for precision
-		return value/0.0005332;
-	}
-	else if (muxState == 2 && measurement == 3) {
-		A2_Trig(0);
-		A1_Trig(1);
-		A0_Trig(0);
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value/0.00004771;
-	}
-	else if (muxState == 3 && measurement == 3) {
-		A2_Trig(0);
-		A1_Trig(1);
-		A0_Trig(1);
-		value = (value/3.0) * 3.0; // Tweaks to the resolution for precision
-		return value/0.00002471;
-	}
-	else if (muxState == 4 && measurement == 3) {
-		A2_Trig(1);
-		A1_Trig(0);
-		A0_Trig(0);
-		value = (value/3.0) * 2.729; // Tweaks to the resolution for precision
-		return value/0.00000084;
-	}	
-	
-
-}
-
-
-// Outputs value of voltage
-float voltage (float reading)
-{
-	float V2,Vout;
-	
-	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-	V2 = ((Vout - 1.5)/0.15)-0.2;
-	autoRange(V2, 1); // does autoranging on voltage
-	
-	// Turns on buzzer if the voltage is out of range
-	if (V2 > 9.99 || V2 == -10.0) {
-		BUZZ_Trig(2);
-	}
-	// Buzzer starts beeping if it gets close to being out of range
-	else if (V2 >= 9.5 || V2 <= -9.5) {
-		BUZZ_Trig(1);
-	}
-	// If measurements are in range the buzzer will not beep
-	else {
-		BUZZ_Trig(0);
-	}
-	return (V2);
-}
-
-// Outputs value of voltage
-float current (float reading)
-{
-	float R1,R2,R3,Rgain,Rf,Vref,V1,V2,Vout;
-
-	Vout = ((float)reading/4096.0)*3.0; // Gets value of voltage from ADC
-	V1 = ((Vout - 1.5)/0.15)/10;
-	
-	// Turns on buzzer if the current is out of range
-	if (V1 > 0.99 || V1 == -1.0) {
-		BUZZ_Trig(2);
-	}
-	// Buzzer starts beeping if it gets close to being out of range
-	else if (V1 >= 0.8 || V1 <= -0.8) {
-		BUZZ_Trig(1);
-	}
-	// If measurements are in range the buzzer will not beep
-	else {
-		BUZZ_Trig(0);
-	}
-	
-	return (V1);
-}
-
-float resistance (float reading)
-{
-	float Vout = ((float)reading/4096.0)*3.0;
-	float R =  autoRange(Vout, 3); // Does autoranging for resistance
-	R = R/1.5;										//scaling factor  
-	
-	// Turns on buzzer if the resistance is out of range
-	if (R == 0){
-		BUZZ_Trig(2);
-	}
-	// If measurements are in range the buzzer will not beep
-	else {
-		BUZZ_Trig(0);
-	}
-	
-	return (R);
-}
-
-void EXTI15_10_CONFIG (void)
-{
-	EXTI_initTypeDef EXTI15_10_IRQn; 
-}
 
 void Setup(void)
 {
@@ -389,6 +123,9 @@ void Setup(void)
   if (SysTick_Config(SystemCoreClock / 1000)) { /* SysTick 1 msec interrupts  */
     while (1);                                  /* Capture error              */
   }
+	
+
+	
 		// Initializes LEDs, Buttons and ADC
   LED_Init();
   BTN_Init();  
@@ -396,6 +133,7 @@ void Setup(void)
 	SWT_Init();
 	BUZZ_Init();
 	A_Init();
+	TIM3I_Init();
 	
 	//Initializes LCD
 	LCD_Initpins();	
@@ -406,6 +144,6 @@ void Setup(void)
 	Delay(20);
 	LCD_Clear();
 	
-  
+  buttonPressed = 0;//clear buttons
 	
 }
