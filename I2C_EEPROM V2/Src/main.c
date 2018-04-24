@@ -41,71 +41,32 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-#include "string.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-#define EEPROM_ADDRESS 0xA0
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_I2C1_Init(void);
+static void MX_I2C2_Init(void);
 static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-void i_write(unsigned position, unsigned int data) {
-	int count = 0;
-	if (data>255) {
-		while (data>255) {
-			data = data - 255;
-			count++;
-		}
-	}
-	
-	if (count>0) {
-		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position, 0xFF, (uint8_t*)&count,1,1);
-		HAL_Delay(5);
-		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position + 1, 0xFF, (uint8_t*)&data,1,1);
-		HAL_Delay(5);
-	}
-	else {
-		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position, 0xFF, (uint8_t*)&count,1,1);
-		HAL_Delay(5);
-		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position + 1, 0xFF, (uint8_t*)&data,1,1);
-		HAL_Delay(5);
-		
-	}
 
-	
-
-}
-
-unsigned int i_read(unsigned position) {
-	int count = 0;
-	unsigned int data = 0;
-	HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDRESS, position, 0xFF, (uint8_t*)&count,1,1);
-	HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDRESS, position + 1, 0xFF, (uint8_t*)&data,1,1);
-	data = data + (count*255);
-	return data;
-
-}
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-unsigned int data_write = 25000;
 
-unsigned int data_read = 0;
-
-char data_uart[100];
 /* USER CODE END 0 */
 
 /**
@@ -137,26 +98,19 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
+  MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-	i_write(0, data_write); //Write data integer to address memory 0
-	
-	data_read = i_read(0); // Read ata from address memory 0
-	
-	sprintf(data_uart, "data_eeprom %d \r\n", data_read);
-	
+
   /* USER CODE END 2 */
-	
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
 
   /* USER CODE END WHILE */
-	HAL_UART_Transmit(&huart1, (uint8_t*)data_uart, strlen(data_uart),100); // send data via uart
-	
-	HAL_Delay(2000);
+
   /* USER CODE BEGIN 3 */
 
   }
@@ -217,20 +171,20 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-/* I2C1 init function */
-static void MX_I2C1_Init(void)
+/* I2C2 init function */
+static void MX_I2C2_Init(void)
 {
 
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.ClockSpeed = 100000;
+  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -262,8 +216,8 @@ static void MX_GPIO_Init(void)
 {
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
 }
 

@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/Davidson/Documents/I2C_EEPROM/Inc
+HeaderPath=C:/Users/Davidson/Documents/I2C_EEPROM V2/Inc
 HeaderFiles=stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;
-SourcePath=C:/Users/Davidson/Documents/I2C_EEPROM/Src
+SourcePath=C:/Users/Davidson/Documents/I2C_EEPROM V2/Src
 SourceFiles=stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]
