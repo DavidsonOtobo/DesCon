@@ -41,7 +41,7 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -51,7 +51,7 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+#define EEPROM_ADDRESS 0xA0
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,11 +62,50 @@ static void MX_USART1_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+void i_write(unsigned position, unsigned int data) {
+	int count = 0;
+	if (data>255) {
+		while (data>255) {
+			data = data - 255;
+			count++;
+		}
+	}
+	
+	if (count>0) {
+		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position, 0xFF, (uint8_t*)&count,1,1);
+		HAL_Delay(5);
+		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position + 1, 0xFF, (uint8_t*)&data,1,1);
+		HAL_Delay(5);
+	}
+	else {
+		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position, 0xFF, (uint8_t*)&count,1,1);
+		HAL_Delay(5);
+		HAL_I2C_Mem_Write(&hi2c1, EEPROM_ADDRESS, position + 1, 0xFF, (uint8_t*)&data,1,1);
+		HAL_Delay(5);
+		
+	}
 
+	
+
+}
+
+unsigned int i_read(unsigned position) {
+	int count = 0;
+	unsigned int data = 0;
+	HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDRESS, position, 0xFF, (uint8_t*)&count,1,1);
+	HAL_I2C_Mem_Read(&hi2c1, EEPROM_ADDRESS, position + 1, 0xFF, (uint8_t*)&data,1,1);
+	data = data + (count*255);
+	return data;
+
+}
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+unsigned int data_write = 25000;
 
+unsigned int data_read = 0;
+
+char data_uart[100];
 /* USER CODE END 0 */
 
 /**
@@ -101,16 +140,23 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+	i_write(0, data_write); //Write data integer to address memory 0
+	
+	data_read = i_read(0); // Read ata from address memory 0
+	
+	sprintf(data_uart, "data_eeprom %d \r\n", data_read);
+	
   /* USER CODE END 2 */
-
+	
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
 
   /* USER CODE END WHILE */
-
+	HAL_UART_Transmit(&huart1, (uint8_t*)data_uart, strlen(data_uart),100); // send data via uart
+	
+	HAL_Delay(2000);
   /* USER CODE BEGIN 3 */
 
   }
