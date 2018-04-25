@@ -65,6 +65,19 @@ void	TIM3_IRQHandler	(void)
 	
 }
 
+//void	TIM4_IRQHandler	(void)
+//{
+//	if(TIM4->SR & TIM_SR_UIF) //check if timer flag is set
+//	{
+//		TIM4->SR&=~TIM_SR_UIF; //clear flag
+//		
+//		GPIOD->ODR =0xff  <<8; //test
+//		
+//		++usCount; // Gets ADC value
+//	}
+//	
+//}
+
 void ledsON (uint8_t leds)
 {
 	GPIOD->ODR = 0x00 << 8;//clears LEDs
@@ -73,6 +86,16 @@ void ledsON (uint8_t leds)
 	
 	
 }
+
+//float getTime_us(void)
+//{
+//	float uSecs = usCount;
+//	float frac_us = (TIM4->CNT)/72;
+//	
+//	usCount = 0;//reset count
+//	
+//	return (uSecs + frac_us);
+//}
 
 /*----------------------------------------------------------------------------
   Function that triggers Buzzer
@@ -354,6 +377,46 @@ float resistance (float reading)
 	return (R);
 }
 
+float timePeriod_s(int cycles) //function which returns time in seconds
+{
+	return (float)cycles/TIMER_FREQ; //16MHz
+}
+
+
+float freq (float timePeriod_s) 
+{
+	return 1/timePeriod_s;
+}
+
+float findFreq(void)
+{
+	int cycles;
+	
+	adcValue = read_ADC1();
+
+	while(adcValue>2000 && buttonPressed != BTN8){
+		adcValue = read_ADC1();
+	}
+
+	while(adcValue < 2000 && buttonPressed != BTN8){
+		adcValue = read_ADC1();
+	}
+	
+	DWT->CYCCNT = 0;
+
+	while(adcValue > 2000 && buttonPressed != BTN8){// wait for edge to fall
+		adcValue = read_ADC1();
+	}
+
+	while(adcValue < 2000 && buttonPressed != BTN8){// wait for edge to raise
+		adcValue = read_ADC1();
+	}
+	
+	cycles = DWT->CYCCNT;
+
+	return freq((float)timePeriod_s(cycles));
+}
+
 
 
 
@@ -368,6 +431,7 @@ void startUpMenu (void)
 	sprintf(welcomeMes,"Multimeter 8=>");//First level of menu
 	LCD_PutS(welcomeMes);
 	LCD_GotoXY(0,1);
+	BUZZ_Trig(0); // Resets Buzzer to off
 	
 	scroll = 0;
 	
@@ -378,14 +442,20 @@ void startUpMenu (void)
 		buttonPressed = 0;
 		
 		if(scroll == 0){
+			LCD_GotoXY(0,0);
+			sprintf(welcomeMes,"Multimeter 8=> ");//First level of menu
+			LCD_PutS(welcomeMes);
 			LCD_GotoXY(0,1);
 			sprintf(opts,"1=V,2=A,3=%c,4=DL", 222);
 			LCD_PutS(opts);
 			ledsON(0xF8);//lights available buttons
 		}
-		else if(scroll == 1){
+		if(scroll == 1){
+			LCD_GotoXY(0,0);
+			sprintf(welcomeMes,"Multimeter 8=bk");//First level of menu
+			LCD_PutS(welcomeMes);
 			LCD_GotoXY(0,1);
-			sprintf(opts,"5=L,6=T,7=Other ");
+			sprintf(opts,"5=FG,6=FM,7=MORE");
 			LCD_PutS(opts);
 			ledsON(0x0F);
 		}
@@ -393,6 +463,7 @@ void startUpMenu (void)
 
 		while(buttonPressed == 0);//wait for button press
 		scroll = !scroll;
+		
 	
 	}while((buttonPressed == BTN8) || (buttonPressed == 0));
 }
@@ -409,6 +480,8 @@ void mode (int modeSelect,
 	uint32_t adcPreviousVal = 0;
 	char prefix[1] = " "; 
 	int logPressed = 0;
+	float freq = 0;
+	
 	
 	buttonPressed = 0; //clear button press
 	
@@ -426,34 +499,7 @@ void mode (int modeSelect,
 		
 			adcPreviousVal =  adcValue;
 				
-			while(adcPreviousVal == adcValue && buttonPressed == 0);//wait until something changes 
-				
-				
-//			if(buttonPressed == BTN2){
-//				Delay(5);
-//				TIM3->DIER = 0;
-//				buttonPressed = 0;
-//				LCD_GotoXY(0,0);
-//				sprintf(title,"Log value? 1=Y, 2=N");
-//				LCD_PutS(title);
-//				
-//				while(buttonPressed != BTN1 && buttonPressed != BTN2)
-//				Delay(5);
-//				
-
-//				if(buttonPressed == 1){
-//					Delay(5);
-//					buttonPressed = 0;
-//					strcpy(storedData[0], output);
-//					LCD_GotoXY(0,0);
-//					sprintf(title,"Logged!           ");
-//					LCD_PutS(title);
-//					//logPlaceholder++;
-//					TIM3->DIER |= 1UL <<0;
-//				}
-//			}
-
-			
+			while(adcPreviousVal == adcValue && buttonPressed == 0);//wait until something changes 			
 			
 			calcVal = voltage(adcValue); //get voltage measurement from ADC value
 			
@@ -465,17 +511,7 @@ void mode (int modeSelect,
 				sprintf(prefix,"");
 			} 		
 			
-//			if(buttonPressed == BTN2){
-//				buttonPressed = 0;
-//				sprintf(output,"%2.2f%cV", calcVal,prefix);// storing spaces caused issue
-//				strcpy(storedData[i], output);//copy output string
-//				LCD_GotoXY(10,0);
-//				sprintf(title,"LOG:%i",i+1); //tell user how many log spaces used
-//				//LCD_PutS(*(parr+4));
-//				LCD_PutS(title);
-//				i++;//incrments through array
-//			}
-			
+			// Store measurement value to datalogger when BTN2 is pressed
 			if(buttonPressed == BTN2){
 				ledsON(0x28);
 				logPressed = 1;
@@ -489,13 +525,12 @@ void mode (int modeSelect,
 			}
 			
 			LCD_GotoXY(0,1);// set cursor to bottom line
-			//snprintf(output,16,"%2.2f%cV  ", calcVal,prefix,);
 			sprintf(output,"%2.2f%sV             ", calcVal,prefix);			//2.2 allows 2 places either side of dp
 			LCD_PutS(output); //Outputs to LCD
 
 			if(logPressed == 1){
 				LCD_GotoXY(10,1);
-				sprintf(output,"8=BK");			//2.2 allows 2 places either side of dp
+				sprintf(output,"8=BK ");			//2.2 allows 2 places either side of dp
 			}
 			else {
 				LCD_GotoXY(10,1);
@@ -512,7 +547,7 @@ void mode (int modeSelect,
 		if(modeSelect == BTN2) // if current button pressed
 	{
 		LCD_Clear();
-		sprintf(title,"Ammeter      <=8");//title message
+		sprintf(title,"Ammeter   8=bk");//title message
 		LCD_PutS(title);//instert title message
 		ledsON(0x28);
 		
@@ -534,7 +569,32 @@ void mode (int modeSelect,
 				sprintf(prefix,"");
 			} 
 			
+			// Store measurement value to datalogger when BTN2 is pressed
+			if(buttonPressed == BTN2){
+				ledsON(0x28);
+				logPressed = 1;
+				buttonPressed = 0;
+				sprintf(output,"%2.2f%sA", calcVal,prefix); //2.2 allows 2 places either side of dp
+				strcpy((pLog+(10*(*pFillIndex))), output);//copy output string. pfill*10 to move array entire row
+				LCD_GotoXY(10,0);
+				sprintf(title,"LOG:%i",(*pFillIndex)+1); //tell user how many log spaces used
+				LCD_PutS(title);
+				(*pFillIndex)++;//incrments through array
+			}
+			
+			LCD_GotoXY(0,1);// set cursor to bottom line
 			sprintf(output,"%2.2f%sA        ", calcVal,prefix); //2.2 allows 2 places either side of dp
+			LCD_PutS(output); //Outputs to LCD
+
+			if(logPressed == 1){
+				LCD_GotoXY(10,1);
+				sprintf(output,"8=BK ");			//2.2 allows 2 places either side of dp
+			}
+			else {
+				LCD_GotoXY(10,1);
+				sprintf(output,"2=LOG");			//2.2 allows 2 places either side of dp
+			}
+			
 			LCD_PutS(output); //Outputs to LCD
 		
 		}
@@ -544,9 +604,9 @@ void mode (int modeSelect,
 	
 		if(modeSelect == BTN3){ // if current button pressed
 			LCD_Clear();
-			sprintf(title,"Ohmmeter 8=<");//title message
+			sprintf(title,"Ohmmeter  8=bk");//title message
 			LCD_PutS(title);//instert title message
-			ledsON(0x48);
+			ledsON(0x68);
 
 			while(buttonPressed != BTN8){ //checks back button has not been pressed
 			
@@ -566,8 +626,33 @@ void mode (int modeSelect,
 					sprintf(prefix,"");
 				} 
 				
-				sprintf(output,"%2.2f%s%c        ",calcVal,prefix, 222); //2.2 allows 2 places either side of dp
-				LCD_PutS(output); //Outputs to LCD
+			// Store measurement value to datalogger when BTN2 is pressed
+			if(buttonPressed == BTN2){
+				ledsON(0x28);
+				logPressed = 1;
+				buttonPressed = 0;
+				sprintf(output,"%2.2f%s%c",calcVal,prefix, 222); //2.2 allows 2 places either side of dp
+				strcpy((pLog+(10*(*pFillIndex))), output);//copy output string. pfill*10 to move array entire row
+				LCD_GotoXY(10,0);
+				sprintf(title,"LOG:%i",(*pFillIndex)+1); //tell user how many log spaces used
+				LCD_PutS(title);
+				(*pFillIndex)++;//incrments through array
+			}
+			
+			LCD_GotoXY(0,1);// set cursor to bottom line
+			sprintf(output,"%2.2f%s%c        ",calcVal,prefix, 222); //2.2 allows 2 places either side of dp
+			LCD_PutS(output); //Outputs to LCD
+
+			if(logPressed == 1){
+				LCD_GotoXY(10,1);
+				sprintf(output,"8=BK ");			//2.2 allows 2 places either side of dp
+			}
+			else {
+				LCD_GotoXY(10,1);
+				sprintf(output,"2=LOG");			//2.2 allows 2 places either side of dp
+			}
+				
+			LCD_PutS(output); //Outputs to LCD
 			
 			}
 	}
@@ -611,8 +696,108 @@ void mode (int modeSelect,
 		
 		
 	}
-		
 	
+	if(modeSelect == BTN6){
+		
+		LCD_Clear();
+		sprintf(title,"Freq Meter 8=BK");//title message
+		LCD_PutS(title);//instert title message
+		ledsON(0x8C);
+		LCD_GotoXY(0,1);
+		
+		while(buttonPressed != BTN8){
+			
+      freq = findFreq();
+			
+			if (buttonPressed == BTN1){// if volts less than 1 convert to milli
+				freq = freq/1000;
+				sprintf(prefix,"k");
+			}
+			else{
+				sprintf(prefix,"");
+			} 	
+
+			
+			LCD_GotoXY(0,1);
+			sprintf(title,"%.2f%sHz               ",freq,prefix);
+			LCD_PutS(title);//instert title message
+			adcPreviousVal = adcValue;
+			
+			while(buttonPressed != BTN8 && buttonPressed != BTN1 && adcPreviousVal == adcValue); //wait for something to change. adcValue updates from interrupt
+				
+		}						
+			
+	}
+	
+	if(modeSelect == BTN7){
+		LCD_Clear();
+		sprintf(title,"More Funcs 8=bk");//title message
+		LCD_PutS(title);//instert title message
+		ledsON(0x38);
+		
+		LCD_GotoXY(0,1);
+		sprintf(title,"1=TEMP,2=LIGHT");
+		LCD_PutS(title);
+		
+		while(buttonPressed != BTN8){
+			if(buttonPressed == BTN2){ //checks BTN2 is pressed
+				LCD_GotoXY(0,0);
+				sprintf(title,"Light     8=Bk");
+				LCD_PutS(title);
+				while(buttonPressed != BTN8){
+					
+						adcPreviousVal =  adcValue; //hold the last ADC value 
+							
+						while(adcPreviousVal == adcValue && buttonPressed != BTN8)//wait until something changes 
+						
+						LCD_GotoXY(0,1);// set cursor to bottom line
+						calcVal = resistance(adcValue); //get resistance measurement from ADC value
+						if(calcVal < 400){
+							calcVal=400;
+						}
+						calcVal = pow(10,(-1.47* log10(calcVal/43860)));
+						if (calcVal > -1 && calcVal < 1) //if resistance less than 1 convert to milli
+						{
+							calcVal = calcVal*1000;
+							sprintf(prefix,"m");
+						}
+						else{
+							sprintf(prefix,"");
+						} 
+						
+					// Store measurement value to datalogger when BTN2 is pressed
+					if(buttonPressed == BTN2){
+						ledsON(0x28);
+						logPressed = 1;
+						buttonPressed = 0;
+						sprintf(output,"%2.2f%slux",calcVal,prefix); //2.2 allows 2 places either side of dp
+						strcpy((pLog+(10*(*pFillIndex))), output);//copy output string. pfill*10 to move array entire row
+						LCD_GotoXY(10,0);
+						sprintf(title,"LOG:%i",(*pFillIndex)+1); //tell user how many log spaces used
+						LCD_PutS(title);
+						(*pFillIndex)++;//incrments through array
+					}
+					
+					LCD_GotoXY(0,1);// set cursor to bottom line
+					sprintf(output,"%2.2f%slux     ",calcVal,prefix); //2.2 allows 2 places either side of dp
+					LCD_PutS(output); //Outputs to LCD
+
+					if(logPressed == 1){
+						LCD_GotoXY(10,1);
+						sprintf(output,"8=BK ");			//2.2 allows 2 places either side of dp
+					}
+					else {
+						LCD_GotoXY(10,1);
+						sprintf(output,"2=LOG");			//2.2 allows 2 places either side of dp
+					}
+						
+					LCD_PutS(output); //Outputs to LCD
+					
+				}
+			}
+		}
+	}
+		
 	
 }
 

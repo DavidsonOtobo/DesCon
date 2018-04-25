@@ -9,6 +9,8 @@
 #include "math.h"
 #include "string.h"
 
+#define TIMER_FREQ 16000000
+
 /*External interrupt line definitions*/
 #define EXTI_line8  ((uint32_t)0x00100)
 #define EXTI_line9  ((uint32_t)0x00200)

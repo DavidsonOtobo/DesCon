@@ -5,7 +5,10 @@
 
 void EXTI9_5_IRQHandler(void);
 void EXTI15_10_IRQHandler(void);
+void	TIM3_IRQHandler	(void);
+void	TIM4_IRQHandler	(void);
 void ledsON (uint8_t leds);
+//float getTime_us(void);
 void BUZZ_Trig(int type);
 void A2_Trig(int type);
 void A1_Trig(int type);
@@ -16,6 +19,9 @@ float autoRange (float value, int measurement);
 float voltage (float reading);
 float current (float reading);
 float resistance (float reading);
+float timePeriod_s(int cycles);
+float freq (float timePeriod_s);
+float findFreq(void);
 void startUpMenu (void);
 void mode (int btnPressed, char * pLog, int * pFilled, int * pIndex);
 
