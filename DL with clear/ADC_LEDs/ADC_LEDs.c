@@ -6,6 +6,7 @@ reads ADC channel and displays upper 8 bits (of 12) on LEDs*/
 
 #include "Setup.h"
 #include "Functions.h"
+#include "EEPROM.h"
 
 
 
@@ -68,15 +69,24 @@ int main (void) {
 	
 	//uint32_t default_btns = SWT_Get(); // Gets initial value of the buttons
 	
+	I2C3_Int();
+	char display[2];
+	I2C3_WriteChar ('0', *"Hello");
+
 	
-	
+	char temp = I2C3_ReadChar ('0');
+	LCD_Clear();
+	Delay(1000);
+	sprintf(display,"%c", I2C3_ReadChar ('0')); //Outputs dp
+	LCD_PutS("Hello"); //Outputs to LCD
+	/*
 	while(1){
 		
 		startUpMenu();//Displays start up menu, user will choose mode with button
 		
 		mode(buttonPressed, (*parr)[0], &logFilled, &logIndex);
 		
-	}
+	}*/
 	
 	
 	

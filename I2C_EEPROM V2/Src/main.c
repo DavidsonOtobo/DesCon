@@ -41,6 +41,8 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
+#include "string.h"
+//#include "LCD.h"
 
 /* USER CODE END Includes */
 
@@ -51,7 +53,9 @@ UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+#define EEPROM_ADDRESS 0xA0 // Start address 
+uint8_t data_to_write = 20;
+char data_to_read[10];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,9 +67,12 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
+
+
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+
 
 /* USER CODE END 0 */
 
@@ -96,11 +103,20 @@ int main(void)
 
   /* USER CODE END SysInit */
 
+	
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+
+
+	HAL_I2C_Mem_Write(&hi2c2, EEPROM_ADDRESS, 0, 0xFF, &data_to_write, 10, 10);
+	HAL_Delay(2000); //delays writing data
+	uint8_t data_read; 
+	HAL_I2C_Mem_Read(&hi2c2, EEPROM_ADDRESS, 0, 0xFF, &data_read, 1, 10);
+	HAL_Delay(2000); //delays writing data
+	sprintf(data_to_read, "%d", data_read);
 
   /* USER CODE END 2 */
 
@@ -110,7 +126,15 @@ int main(void)
   {
 
   /* USER CODE END WHILE */
+	// To send data via UART
+	HAL_UART_Transmit(&huart1, (uint8_t*)data_to_read,strlen(data_to_read),100);
+	printf("%s", data_to_read);
+	HAL_Delay(2000);
+		
 
+	//printf("%c", "hello"); // Displays value on LCD
+		
+		
   /* USER CODE BEGIN 3 */
 
   }
